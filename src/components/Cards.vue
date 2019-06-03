@@ -22,7 +22,7 @@
           <b-form-checkbox v-model="administrator" name="check-button" switch><small>Administrator?</small></b-form-checkbox>
         </div>
         <br>
-        <task-view :administrator="administrator" :workflowStatus="workflowStatus" :task="task" @openModalNewTask="openModalNewTask()"></task-view>
+        <task-view :administrator="administrator" :workflowStatus="workflowStatus" :task="task" @openModalNewTask="openModalNewTask($event)"></task-view>
       </div>
       <!-- Votes table -->
       <div class="col-md-4 votes-table">
@@ -144,7 +144,9 @@
           return average;
         return Math.round(average);
       },
-      openModalNewTask() {
+      openModalNewTask(editCurrentTask) {
+        if (editCurrentTask && this.task)
+          this.temporalTask = {title : this.task.title, description: this.task.description};
         this.$refs.newTaskModal.show();
       },
       newTask() {
@@ -223,6 +225,8 @@
         this.socket.on('NEW_TASK', (data) => {
           this.task = data.task;
           this.workflowStatus = 2;
+          this.value = null;
+          this.confirmed = false;
           if (!this.showToastNewTask)
             this.makeToast('secondary', 'Nwe task', 'There is a new task to be evaluated');
           this.showToastNewTask = false;

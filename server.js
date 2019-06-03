@@ -7,6 +7,7 @@ const taskService = require('./taskService')
 var os = require("os");
 var connections = [];
 var tasks = [];
+var task = null;
 
 io.on('connection', socket => {
 
@@ -19,7 +20,6 @@ io.on('connection', socket => {
     //Check if exists other user with same name and room
     const existsOtherByNameAndRom = connectionService.existsOtherByNameAndRom(socket.id, user.name, user.room, connections);
     if (existsOtherByNameAndRom != null) {
-      console.log("Ya existe papa");
       io.to(socket.id).emit('REDIRECT');
       return;
     }
@@ -33,6 +33,9 @@ io.on('connection', socket => {
     const connectionsRoom = connectionService.filterAllByRoom(user.room, connections);
     socket.in(user.room).emit('SYNC', connectionsRoom);
     io.to(socket.id).emit('SYNC', connectionsRoom);
+    /* If there is a task evaluating, send it */
+    if (task)
+      io.to(socket.id).emit('NEW_TASK', task);
     /* Sync tasks */
     let tasksRoom = taskService.filterAllByRoom(user.room, tasks);
     io.to(socket.id).emit('SYNC_TASKS', tasksRoom);
@@ -72,6 +75,8 @@ io.on('connection', socket => {
         tasksRoom.forEach(task => {
           taskService.deleteById(task.task.id, tasks);
         });
+        // Delete task
+        task = null;
       }
     }
   });
@@ -86,11 +91,14 @@ io.on('connection', socket => {
 
   socket.on('SEND_FINAL_VALUE', (data) => {
     socket.in(data.user.room).emit('FINAL_VALUE');
+    //Reset votes
     connectionService.resetVotes(data, connections);
+    //Send users without votes
     let connectionsRoom = connectionService.filterAllByRoom(data.user.room, connections);
     io.to(socket.id).emit('SYNC', connectionsRoom);
     socket.in(data.user.room).emit('SYNC', connectionsRoom);
     /* Tasks */
+    task = null;
     tasks.push({'room': data.user.room, 'task': data.task});
     let tasksRoom = taskService.filterAllByRoom(data.user.room, tasks);
     io.to(socket.id).emit('SYNC_TASKS', tasksRoom);
@@ -108,6 +116,7 @@ io.on('connection', socket => {
   /************* TASKS **************/
 
   socket.on('SEND_NEW_TASK', (data) => {
+    task = data;
     socket.in(data.user.room).emit('NEW_TASK', data);
   });
 
