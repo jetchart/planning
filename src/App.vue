@@ -61,7 +61,7 @@ a {
 }
 
 .content {
-  height: 65%;
+  height: 72%;
   margin: 2rem;
   padding:20px;
   overflow-y: scroll;
