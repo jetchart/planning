@@ -82,6 +82,12 @@ io.on('connection', socket => {
       }
     }
   });
+  
+  /************* CHAT **************/
+
+  socket.on('PING', (data) => {
+    console.log("ping!", data);
+  });
 
   /************* CHAT **************/
 

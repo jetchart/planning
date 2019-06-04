@@ -119,6 +119,7 @@
       this.getDeleteTask();
       this.getSync();
       this.getSyncTasks();
+      this.doPing();
     },
     methods: {
       onCopy() {
@@ -215,6 +216,12 @@
         this.socket.on('SYNC_TASKS', (data) => {
           this.tasks = data;
         });
+      },
+	  doPing() {
+		setInterval(() => {
+			const data = { user: this.user, };
+			this.socket.emit('PING', data);
+		}, 12000);
       },
       getFinalValue() {
         this.socket.on('FINAL_VALUE', () => {
