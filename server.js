@@ -33,6 +33,10 @@ io.on('connection', socket => {
     socket.in(data.user.room).emit('NEW_TASK', data);
   });
 
+  socket.on('SEND_DELETE_TASK', (data) => {
+    socket.in(data.user.room).emit('DELETE_TASK', data);
+  });
+
   socket.on('SEND_FINAL_VALUE', (data) => {
     socket.in(data.user.room).emit('FINAL_VALUE', data);
   });

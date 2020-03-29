@@ -8,22 +8,9 @@
       </div>
       <div class="col-3">
         <button :disabled="workflowStatus != 2 && workflowStatus != 3 && workflowStatus != 4" class="btn btn-danger btn-sm" @click="reset()"><b-icon icon="trash"></b-icon></button>
-        <table class="table table-results">
-          <thead>
-          <tr>
-            <th scope="col" align="left">User</th>
-            <th scope="col" align="center">Vote</th>
-          </tr>
-          </thead>
-          <tbody class="results">
-            <tr v-for="value in values">
-              <td align="left">{{value.user.name}}</td>
-              <td align="center">{{value.value}}</td>
-            </tr>
-          </tbody>
-        </table>
-        <div class="input-group mb-3">
-          <input type="text" v-model="finalValue" class="form-control" placeholder="Final value" aria-describedby="finalValue">
+        <votes-table :values="values"></votes-table>
+        <div class="input-group input-group-sm mb-3">
+          <input type="number" :disabled="workflowStatus != 4" v-model="finalValue" class="form-control" placeholder="Final value" aria-describedby="finalValue">
           <div class="input-group-append">
             <button :disabled="workflowStatus != 4 || !finalValue" @click="confirmTask()" class="btn btn-outline-success" type="button" id="finalValue-addon2"><b-icon icon="check"></b-icon></button>
           </div>
@@ -32,52 +19,40 @@
     </div>
     <div class="row" align="left">
       <div class="col">
-        <h4>
-          Task to evaluate
-          <b-button :disabled="workflowStatus != 1 && workflowStatus != 5" @click="openModalNewTask()" pill variant="primary" size="sm"><b-icon icon="plus"></b-icon></b-button>
-        </h4>
-        Task: {{task.title}}<br>
-        Descripcion: {{task.description}}
+        <task-view :workflowStatus="workflowStatus" :task="task" @openModalNewTask="openModalNewTask()"></task-view>
       </div>
     </div>
-    <div v-if="tasks.length > 0" class="row" align="left">
+    <div class="row" align="left">
       <div class="col">
-        <table class="table table-results">
-          <thead>
-          <tr>
-            <th scope="col" align="left">Task</th>
-            <th scope="col" align="center">Description</th>
-            <th scope="col" align="center">Result</th>
-            <th scope="col" align="center">Delete</th>
-          </tr>
-          </thead>
-          <tbody class="results">
-          <tr v-for="task in tasks">
-            <td align="left">{{task.task.title}}</td>
-            <td align="left">{{task.task.description}}</td>
-            <td align="left">{{task.value}}</td>
-            <td align="left"><b-icon icon="trash"></b-icon></td>
-          </tr>
-          </tbody>
-        </table>
+        <task-history :tasks="tasks" @sendDeleteTask="sendDeleteTask($event)"></task-history>
       </div>
     </div>
     <b-modal ref="modalFinalValue" title="Votation result" ok-only centered @hide="hide()">
       <p class="my-4">The final value is: <b>{{finalValue}}</b></p>
     </b-modal>
     <b-modal ref="newTaskModal" title="New task" centered @ok="newTask()">
-      <input type="text" placeholder="Title" v-model="task.title"/>
-      <input type="text" placeholder="Description" v-model="task.description"/>
+      <div class="form-group">
+        <label for="title">Task</label>
+        <input v-model="temporalTask.title" type="text" class="form-control" id="title">
+      </div>
+      <div class="form-group">
+        <label for="description">Description</label>
+        <textarea v-model="temporalTask.description" class="form-control" id="description" rows="3"></textarea>
+      </div>
     </b-modal>
   </div>
 </template>
 
 <script>
   import Card from './Card';
+  import TaskHistory from './TaskHistory';
+  import VotesTable from './VotesTable';
+  import TaskView from './TaskView';
 
   export default {
     name: 'Cards',
     props: ['socket', 'user', 'options'],
+    components: { Card, TaskHistory, VotesTable, TaskView, },
     data () {
       return {
         value: null,
@@ -87,6 +62,7 @@
         confirmedTask: false,
         tasks: [],
         task: {},
+        temporalTask: {},
         workflowStatus: 1, /* 1: init, 2: vote, 3: confirm vote, 4: sendResult */
       }
     },
@@ -95,16 +71,28 @@
       this.getReset();
       this.getFinalValue();
       this.getNewTask();
+      this.getDeleteTask();
     },
     methods: {
       sendCard(value) {
         this.value = value;
         this.workflowStatus = 3;
       },
+      getCalculateVotes() {
+        let sum = 0;
+        let average = 0;
+        this.values.forEach(value => sum += value.value);
+        average = sum / this.values.length;
+        if (average == 0.5)
+          return average;
+        return Math.round(average);
+      },
       openModalNewTask() {
         this.$refs.newTaskModal.show();
       },
       newTask() {
+        this.task = {id: this.tasks.length + 1, title: this.temporalTask.title, description: this.temporalTask.description, };
+        this.temporalTask = {};
         const data = { user: this.user, task: this.task};
         this.socket.emit('SEND_NEW_TASK', data);
         this.workflowStatus = 2;
@@ -135,10 +123,27 @@
         this.confirmed = false;
         this.$refs.modalFinalValue.show();
       },
+      sendDeleteTask(id) {
+        const data = { user: this.user, id: id};
+        this.socket.emit('SEND_DELETE_TASK', data);
+        this.deleteTaskById(id);
+      },
+      deleteTaskById(id) {
+        let index = 0;
+        this.tasks.forEach(task => {
+          console.log('task', task);
+          if (task.task.id == id)
+            return;
+          index++;
+        });
+        if (index < this.tasks.length)
+          this.tasks.splice(index, 1);
+      },
       confirm() {
         const data = {  user: this.user,  value: this.value };
         this.socket.emit('SEND_CONFIRM', data);
         this.values.push(data);
+        this.finalValue = this.getCalculateVotes();
         this.value = null;
         this.confirmed = true;
         this.workflowStatus = 4;
@@ -146,6 +151,7 @@
       getValue() {
         this.socket.on('VALUE_CONFIRM', (data) => {
           this.values.push(data);
+          this.finalValue = this.getCalculateVotes();
         });
       },
       getFinalValue() {
@@ -161,6 +167,11 @@
           this.workflowStatus = 2;
         });
       },
+      getDeleteTask() {
+        this.socket.on('DELETE_TASK', (data) => {
+          this.deleteTaskById(id);
+        });
+      },
       getReset() {
         this.socket.on('RESET', (data) => {
           this.values = [];
@@ -172,7 +183,6 @@
     },
     watch: {
     },
-    components: { Card, }
   }
 </script>
 
