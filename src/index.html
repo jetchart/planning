@@ -1,0 +1,71 @@
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <!--Añadimos los estilos de la carpeta public y el cdn de bootstrap-->
+    <link rel="stylesheet" href="/public/style.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <title>Chat con Vuejs</title>
+</head>
+
+<body>
+<!-- Creamos el contenedor con ID APP dénde trabajaremos con VueJS-->
+<div id="app">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-6 offset-md-3">
+                <h1 class="title-page">Chat en Vuejs</h1>
+                <div class="container-chat">
+                    <ul id="chat">
+                        <!--Recorremos el array de mensajes y mostramos uno por uno en la lista-->
+                        <li v-for="m in messages">
+                            {{m}}
+                        </li>
+                    </ul>
+                    <!-- con el atributo submit, le indicamos que al usar el input submit llamaremos a la funcíon sendMessage-->
+                    <form @submit.prevent="sendMessage">
+                        <input type="text" placeHolder="Mensaje..." v-model="message" class="form-control">
+                        <input type="submit" value="Enviar" class="btn btn-chat">
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="/socket.io/socket.io.js"></script>
+
+<script>
+    //inicializamos la variable socket que utilizaremos en created
+    var socket = null;
+    var app = new Vue({
+        el:'#app',
+        data:{
+            //Inicializamos las variables
+            message:'',
+            messages: []
+        },
+        methods:{
+            /*Creamos la funcion sendMessage, que será la que envíe mediante socket
+             el mensaje y lo recibiran todos los usuarios en su navegador,
+             añadiendose éste al  array messages de cada usuario*/
+            sendMessage:function(){
+                socket.emit('message', this.message);
+                this.message = '';
+            }
+        },
+        //Inicialización de la variable socket
+        created: function(){
+            socket = io();
+        },
+        //Se reciben los mensajes y se añaden al array
+        mounted: function(){
+            socket.on('message', function(message){
+                app.messages.push(message);
+            });
+        }
+    });
+</script>
+
+</body>
+

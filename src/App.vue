@@ -1,0 +1,62 @@
+<template>
+  <div id="app">
+    <header-custom></header-custom>
+    <div class="content card bg-light">
+      <router-view></router-view>
+    </div>
+  </div>
+</template>
+
+<script>
+  import 'bootstrap/dist/css/bootstrap.css'
+  import 'bootstrap-vue/dist/bootstrap-vue.css'
+  import HeaderCustom from './components/Header'
+
+export default {
+  name: 'app',
+  data () {
+    return {
+      msg: 'Welcome to Your Vue.js App'
+    }
+  },
+  components: { HeaderCustom }
+}
+</script>
+
+<style>
+#app {
+  font-family: Lato,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+  color: #2c3e50;
+  background-color: white;
+  height: 100vh;
+}
+
+h1, h2 {
+  font-weight: normal;
+}
+
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+li {
+  display: inline-block;
+  margin: 0 10px;
+}
+
+a {
+  color: #42b983;
+}
+
+.content {
+  height: 65%;
+  margin: 4rem;
+  padding:20px;
+  overflow-y: scroll;
+}
+
+</style>

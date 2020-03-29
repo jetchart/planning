@@ -1,0 +1,47 @@
+{
+  "name": "planning",
+  "main": "src/index.js",
+  "description": "Planning",
+  "version": "1.0.0",
+  "author": "JME",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "dev": "cross-env NODE_ENV=development webpack-dev-server --open --hot",
+    "build": "cross-env NODE_ENV=production webpack --progress --hide-modules"
+  },
+  "dependencies": {
+    "bootstrap-vue": "^2.9.0",
+    "express": "^4.15.2",
+    "socket.io": "^2.0.4",
+    "socket.io-client": "^2.0.4",
+    "vue": "^2.5.11",
+    "vue-markdown": "^2.2.4",
+    "vue-prism": "^1.0.5",
+    "vue-resource": "^1.5.1",
+    "vue-router": "^3.1.6",
+    "vue-socket.io": "^3.0.7",
+    "vuetify": "^1.0.6",
+    "vuex": "^3.0.1"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not ie <= 8"
+  ],
+  "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.2",
+    "babel-preset-env": "^1.6.0",
+    "babel-preset-stage-3": "^6.24.1",
+    "cross-env": "^5.0.5",
+    "css-loader": "^0.28.7",
+    "file-loader": "^1.1.4",
+    "vue-loader": "^13.0.5",
+    "vue-template-compiler": "^2.4.4",
+    "vuetify": "^2.2.19",
+    "vuex": "^3.1.3",
+    "webpack": "^3.6.0",
+    "webpack-dev-server": "^2.9.1"
+  }
+}
