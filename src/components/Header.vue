@@ -18,8 +18,8 @@
           </b-button>
         </div>
       </template>
-      <div v-else class="col-10" align="right">
-        No connected
+      <div v-else class="col-10 no-connected" align="right">
+        <small>No connected</small>
       </div>
     </div>
   </div>
@@ -57,15 +57,16 @@
     text-align: center;
     background: #1abc9c;
     color: white;
-    font-size: 12px;
     text-transform: uppercase;
     font-size: 1rem;
     font-family: Montserrat,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
     font-weight: 700;
-
     -webkit-box-shadow: 0px -12px 14px 10px rgba(0,0,0,0.75);
     -moz-box-shadow: 0px -12px 14px 10px rgba(0,0,0,0.75);
     box-shadow: 0px -12px 14px 10px rgba(0,0,0,0.75);
+  }
+
+  .no-connected {
   }
 
   .logo {

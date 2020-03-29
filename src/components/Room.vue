@@ -1,8 +1,8 @@
 <template>
-  <div>
+  <div >
     <div class="row">
     <div class="col" align="center">
-      <div class="card bg-light mb-3" style="max-width: 20rem;">
+      <div class="card bg-light mb-3 room">
         <div class="card-header">Join to room</div>
         <div class="card-body" >
           <div class="card-title">
@@ -51,4 +51,15 @@
 </script>
 
 <style>
+  row. {
+    justify-items: center;
+  }
+  .room {
+    margin-top: 2rem;
+    max-width: 20rem;
+    border-radius: 15px;
+    -webkit-box-shadow: 0px 0px 14px -3px rgba(0,0,0,0.75);
+    -moz-box-shadow: 0px 0px 14px -3px rgba(0,0,0,0.75);
+    box-shadow: 0px 0px 14px -3px rgba(0,0,0,0.75);
+  }
 </style>
