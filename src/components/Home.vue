@@ -1,6 +1,6 @@
 <template>
   <div>
-    <room v-if="!getConnected" :socket="socket" @save="setUser($event)"></room>
+    <room v-if="!getConnected" :socket="socket" :user="user" @save="setUser($event)"></room>
     <cards v-if="getConnected" :socket="socket" :user="user" :options="options"></cards>
     <chat v-if="getConnected"  :socket="socket" :user="user"></chat>
   </div>
@@ -18,9 +18,7 @@
     data () {
       return {
         user: null,
-        message: '',
-        messageReceived: '',
-        users: [],
+        user: {},
         socket : io('localhost:3000'),
         options: [0.5, 1, 2, 3, 5]
       }
@@ -31,34 +29,15 @@
     methods: {
       setUser(user) {
         this.user = user;
-        this.users.push(this.socket.id);
+      },
+      readParameters() {
+        this.user = {name: this.$route.query.name, room: this.$route.query.room}
       },
     },
-    mounted(){
-      this.socket.on('message', msg => {
-        this.messageReceived = msg;
-      });
-      this.socket.on('user-connected', user => {
-        this.users.push(user);
-      });
-      this.socket.on('user-disconnected', id => {
-        let i = 0;
-        let index = 0;
-        this.users.forEach(user => {
-          if (user == id)
-            index = i;
-          i++;
-        });
-        this.users.splice(index, 1)
-      })
-      this.socket.on('init', init => {
-        console.log('INIT:', init);
-      })
+    mounted() {
+      this.readParameters();
     },
     watch: {
-      'socket': function(){
-        this.users.push(this.socket.id);
-      }
     },
     components: { Cards, Room, Chat }
   }

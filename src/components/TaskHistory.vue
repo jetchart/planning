@@ -16,7 +16,7 @@
         <td align="left">{{task.task.title}}</td>
         <td align="left">{{task.task.description}}</td>
         <td align="left">{{task.value}}</td>
-        <td align="left"><b-icon icon="trash" class="pointer" @click="$emit('sendDeleteTask', task.task.id)"></b-icon></td>
+        <td align="left"><b-icon icon="trash" class="pointer" @click="$emit('sendDeleteTask', task.task.id)" v-b-tooltip.hover title="Delete task (also delete for other users)"></b-icon></td>
       </tr>
       </tbody>
     </table>

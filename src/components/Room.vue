@@ -8,11 +8,11 @@
           <div class="card-title">
             <div class="form-group" align="left">
               <label for="name">Name</label>
-              <input v-model="user.name" type="text" class="form-control" id="name">
+              <input v-model="user.name" v-on:keyup.enter="subscribe()" type="text" class="form-control" id="name">
             </div>
             <div class="form-group" align="left">
               <label for="room">Room</label>
-              <input v-model="user.room" type="text" class="form-control" id="room">
+              <input v-model="user.room" v-on:keyup.enter="subscribe()" type="text" class="form-control" id="room">
             </div>
             <button :disabled="!user.name || !user.room" class="btn btn-primary" @click="subscribe()">Join</button>
           </div>
@@ -20,19 +20,6 @@
       </div>
     </div>
     </div>
-    <!--
-    <div class="row">
-      <div v-if="!connected" class="col">
-        <input v-model="user.name" placeholder="Name"/>
-        <input v-model="user.room" placeholder="Room"/>
-        <button :disabled="!user.name || !user.room" class="btn btn-primary" @click="subscribe()">Subscribe</button>
-      </div>
-      <div v-else class="col">
-        <span>User: {{user.name}}</span>
-        <span>Room: {{user.room}}</span>
-      </div>
-    </div>
-    -->
   </div>
 </template>
 
@@ -40,10 +27,9 @@
 
   export default {
     name: 'Rooms',
-    props: ['socket'],
+    props: ['socket', 'user'],
     data () {
       return {
-        user: {},
         connected: false,
       }
     },
@@ -51,6 +37,8 @@
     },
     methods: {
       subscribe() {
+        if (!this.user.name || !this.user.room)
+          return;
         this.$store.commit('join',this.user);
         this.socket.emit('subscribe', this.user);
         this.$emit('save', this.user);
