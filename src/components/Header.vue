@@ -2,7 +2,7 @@
   <div class="header">
     <div class="row">
       <div class="col-2" align="left">
-        <img width="50" height="45" class="logo" src="../assets/j.jpg" alt="">
+        <img width="50" height="45" class="logo" src="../../public/assets/j.jpg" alt="">
       </div>
       <template v-if="getConnected" >
         <div class="col-5"></div>

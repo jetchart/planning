@@ -11,7 +11,7 @@
           <button v-if="!(workflowStatus != 2 && workflowStatus != 3 && workflowStatus != 4)" class="btn btn-outline-danger btn-sm" @click="reset()" v-b-tooltip.hover title="Reset all votes from current task (reset also for other users)"><b-icon icon="trash"></b-icon></button>
         </div>
         <votes-table :values="values"></votes-table>
-        <div class="input-group input-group-sm mb-3">
+        <div v-if="workflowStatus == 4" class="input-group input-group-sm mb-3">
           <input type="number" :disabled="workflowStatus != 4" v-model="finalValue" class="form-control" placeholder="Final value" aria-describedby="finalValue">
           <div class="input-group-append">
             <button :disabled="workflowStatus != 4 || !finalValue" @click="confirmTask()" class="btn btn-outline-success" type="button" id="finalValue-addon2" v-b-tooltip.hover title="Send the deciding vote"><b-icon icon="check"></b-icon></button>

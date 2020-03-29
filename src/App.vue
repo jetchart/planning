@@ -32,6 +32,7 @@ export default {
   color: #2c3e50;
   background-color: white;
   height: 100vh;
+  border-radius: 15px;
 }
 
 h1, h2 {
@@ -57,6 +58,10 @@ a {
   margin: 4rem;
   padding:20px;
   overflow-y: scroll;
+  border-radius: 10px;
+  -webkit-box-shadow: 0px 0px 8px 0px rgba(0,0,0,0.29);
+  -moz-box-shadow: 0px 0px 8px 0px rgba(0,0,0,0.29);
+  box-shadow: 0px 0px 8px 0px rgba(0,0,0,0.29);
 }
 
 </style>
