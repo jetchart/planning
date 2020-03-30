@@ -19,7 +19,7 @@
       return {
         user: null,
         user: {},
-        socket : io('localhost:3000'),
+        socket : io('10.4.116.46:3000'),
         options: [0.5, 1, 2, 3, 5]
       }
     },
