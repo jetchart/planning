@@ -19,7 +19,7 @@
       return {
         user: null,
         user: {},
-        socket : io(window.location.hostname + ':3000'),
+        socket : io('https://planning-vue.herokuapp.com/'),
         options: [0.5, 1, 2, 3, 5]
       }
     },
