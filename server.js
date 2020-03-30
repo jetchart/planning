@@ -2,6 +2,7 @@ var app = require('express')()
 var http = require('http').Server(app)
 var io = require('socket.io')(http)
 var os = require("os");
+var ip = require("ip");
 
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -72,5 +73,6 @@ io.on('connection', socket => {
 const port = process.env.PORT || 3000
 http.listen(port , () => {
   console.log('Hostname:', os.hostname());
+  console.log('Ip:', ip.address());
   console.log(`Listening on port: ${port}`)
 })
