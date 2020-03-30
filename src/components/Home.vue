@@ -19,7 +19,7 @@
       return {
         user: null,
         user: {},
-        socket : io('10.4.116.46:3000'),
+        socket : io(window.location.hostname + ':3000'),
         options: [0.5, 1, 2, 3, 5]
       }
     },
@@ -35,6 +35,7 @@
       },
     },
     mounted() {
+      console.log(window.location.hostname);
       this.readParameters();
     },
     watch: {
