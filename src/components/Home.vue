@@ -19,7 +19,8 @@
       return {
         user: null,
         user: {},
-        socket : io('https://planning-vue.herokuapp.com/'),
+        url: process.env.URL_EXPRESS_SERVER || 'localhost:8080',
+        socket : io(this.url),
         options: [0.5, 1, 2, 3, 5]
       }
     },
@@ -35,7 +36,7 @@
       },
     },
     mounted() {
-      console.log(window.location.hostname);
+      console.log('Express Server:', this.url);
       this.readParameters();
     },
     watch: {
