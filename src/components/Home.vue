@@ -19,8 +19,8 @@
       return {
         user: null,
         user: {},
-        url: process.env.URL_EXPRESS_SERVER || 'localhost:8080',
-        socket : io(this.url),
+        url: process.env.VUE_APP_URL_EXPRESS_SERVER || 'localhost:3000',
+        socket : io('localhost:3000'),
         options: [0.5, 1, 2, 3, 5]
       }
     },
@@ -36,7 +36,7 @@
       },
     },
     mounted() {
-      console.log('Express Server:', this.url);
+      console.log('Express Server:', process.env);
       this.readParameters();
     },
     watch: {

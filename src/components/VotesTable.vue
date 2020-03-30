@@ -10,7 +10,7 @@
       <tbody class="results">
       <tr v-for="value in values">
         <td align="left">{{value.user.name}}</td>
-        <td align="center">{{value.value}}</td>
+        <td align="center">{{workflowStatus >= 3 ? value.value : '?'}}</td>
       </tr>
       </tbody>
     </table>
@@ -21,7 +21,7 @@
 
   export default {
     name: 'VotesTable',
-    props: ['values'],
+    props: ['values', 'workflowStatus'],
     data () {
       return {
       }

@@ -5,7 +5,7 @@
       <b-button v-if="!(workflowStatus != 1 && workflowStatus != 5)" @click="$emit('openModalNewTask', null)" pill variant="primary" size="sm" v-b-tooltip.hover title="Create a new task"><b-icon icon="plus"></b-icon></b-button>
     </h5>
     <small>
-      <b>Task: </b>{{task.title}}<br>
+      <b>Task: </b>{{task.title}}
       <b>Descripcion: </b>{{task.description}}
     </small>
   </div>
