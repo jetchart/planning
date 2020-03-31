@@ -5,29 +5,12 @@ const connectionService = require('./connectionService')
 const taskService = require('./taskService')
 
 var os = require("os");
-app.use((req, res, next) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
-  res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
-
-  res.setHeader('Access-Control-Allow-Credentials', true);
-  next();
-
-})
-
-app.get('/clients', (req, res) => {
-  res.send(Object.keys(io.sockets.clients().connected))
-})
-
 var connections = [];
 var tasks = [];
 
 io.on('connection', socket => {
+
   console.log(`A user connected with socket id ${socket.id}`);
-
-  Object.keys(io.sockets.sockets).forEach((socketid) => {console.log(socketid)})
-
-  socket.broadcast.emit('user-connected', socket.id)
 
   /************* CONECTIONS **************/
 
@@ -35,12 +18,18 @@ io.on('connection', socket => {
     socket.join(user.room);
     connections.push({'id': socket.id, 'user': user});
     const connectionsRoom = connectionService.filterAllByRoom(user.room, connections);
-    io.to(socket.id).emit('SYNC', connectionsRoom);
     socket.in(user.room).emit('SYNC', connectionsRoom);
+    io.to(socket.id).emit('SYNC', connectionsRoom);
+    /* Sync tasks */
+    let tasksRoom = taskService.filterAllByRoom(user.room, tasks);
+    io.to(socket.id).emit('SYNC_TASKS', tasksRoom);
+
+    console.log('connections', connectionsRoom);
+    console.log('tasks', tasksRoom);
   });
 
   socket.on('disconnect', () => {
-    console.log('socket: disconnected');
+    //console.log('socket: disconnected');
     const connection = connectionService.findById(socket.id, connections);
     if (connection != null && connection.user.room != null) {
       /* SYNC */
@@ -55,6 +44,9 @@ io.on('connection', socket => {
         });
       }
     }
+
+    console.log('connections', connections);
+    console.log('tasks', tasks);
   });
 
   /************* CHAT **************/
@@ -66,7 +58,7 @@ io.on('connection', socket => {
   /************* VOTES **************/
 
   socket.on('SEND_FINAL_VALUE', (data) => {
-    socket.in(data.user.room).emit('FINAL_VALUE', data);
+    //socket.in(data.user.room).emit('FINAL_VALUE', data);
     connectionService.resetVotes(data, connections);
     let connectionsRoom = connectionService.filterAllByRoom(data.user.room, connections);
     io.to(socket.id).emit('SYNC', connectionsRoom);
@@ -105,18 +97,10 @@ io.on('connection', socket => {
     }
   });
 
+  //Deprecated
   socket.on('SEND_RESET', (data) => {
     socket.in(data.user.room).emit('RESET', data);
   });
-
-
-  socket.on('confirm', (value) => {
-    console.log('socket: disconnected');
-    socket.broadcast.emit('confirm', {
-      value: value,
-      user: socket.id
-    })
-  })
 
 })
 
