@@ -11,11 +11,11 @@
           <b-form-checkbox v-model="administrator" name="check-button" switch><small>Administrator?</small></b-form-checkbox>
           <!--<button v-if="administrator && !(workflowStatus != 2 && workflowStatus != 3 && workflowStatus != 4)" class="btn btn-outline-danger btn-sm" @click="reset()" v-b-tooltip.hover title="Reset all votes from current task (reset also for other users)"><b-icon icon="trash"></b-icon></button>-->
         </div>
-        <votes-table :connections="connections" :values="values" :workflowStatus="workflowStatus"></votes-table>
+        <votes-table :connections="connections" :workflowStatus="workflowStatus"></votes-table>
         <div v-if="administrator && workflowStatus == 4" class="input-group input-group-sm mb-3">
           <input type="number" :disabled="workflowStatus != 4" v-model="finalValue" class="form-control" placeholder="Final value" aria-describedby="finalValue">
           <div class="input-group-append">
-            <button :disabled="workflowStatus != 4 || !finalValue" @click="confirmTask()" class="btn btn-outline-success" type="button" id="finalValue-addon2" v-b-tooltip.hover title="Send the deciding vote"><b-icon icon="check"></b-icon></button>
+            <button :disabled="workflowStatus != 4 || !finalValue" @click="confirmTask()" class="btn" v-bind:class="{'btn-outline-success': allVotes, 'btn-outline-danger': !allVotes}" type="button" id="finalValue-addon2" v-b-tooltip.hover title="Send the deciding vote"><b-icon icon="check"></b-icon></button>
           </div>
         </div>
       </div>
@@ -62,7 +62,6 @@
       return {
         value: null,
         finalValue: null,
-        values: [],
         confirmed: false,
         confirmedTask: false,
         tasks: [],
@@ -75,6 +74,16 @@
         showToastTaskDeleted: false,
         workflowStatus: 1, /* 1: init, 2: vote, 3: confirm vote, 4: sendResult */
       }
+    },
+    computed: {
+      allVotes() {
+        let all = true;
+        this.connections.forEach(con => {
+          if (!con.value)
+            all = false;
+        });
+        return all;
+      },
     },
     mounted() {
       this.getValue();
@@ -116,15 +125,6 @@
         this.workflowStatus = 2;
         this.showToastNewTask = true;
       },
-      reset() {
-        const data = { user: this.user};
-        this.socket.emit('SEND_RESET', data);
-        this.values = [];
-        this.value = null;
-        this.finalValue = null;
-        this.confirmed = false;
-        this.workflowStatus = 2;
-      },
       makeToast(variant, title, description) {
         this.$bvToast.toast(description, {
           title: title,
@@ -132,13 +132,8 @@
           solid: true
         })
       },
-      saveHistoryTask(task, finalValue) {
-        //this.tasks.push({task: task, value: finalValue});
-      },
       hide() {
-        this.saveHistoryTask(this.task, this.finalValue);
         this.finalValue = null;
-        this.values = [];
         this.value = null;
         this.workflowStatus = 1;
         this.task = {};
@@ -158,7 +153,6 @@
       confirm() {
         const data = {  user: this.user,  value: this.value };
         this.socket.emit('SEND_CONFIRM', data);
-        //this.values.push(data);
         this.finalValue = this.getCalculateVotes();
         this.value = null;
         this.confirmed = true;
@@ -169,7 +163,7 @@
         this.socket.on('VALUE_CONFIRM', (connections) => {
           this.connections = connections;
           if (!this.showToastNewVote)
-            this.makeToast('success', 'NEW VOTE!', `A new vote have been emited`);
+            this.makeToast('success', 'New vote', `A new vote have been emited`);
           this.showToastNewVote = false;
           this.finalValue = this.getCalculateVotes();
         });
@@ -198,7 +192,7 @@
           this.task = data.task;
           this.workflowStatus = 2;
           if (!this.showToastNewTask)
-            this.makeToast('secondary', 'NEW TASK!', 'There is a new task to be evaluated');
+            this.makeToast('secondary', 'Nwe task', 'There is a new task to be evaluated');
           this.showToastNewTask = false;
         });
       },
@@ -212,7 +206,6 @@
       },
       getReset() {
         this.socket.on('RESET', (data) => {
-          this.values = [];
           this.value = null;
           this.finalValue = null;
           this.confirmed = false;

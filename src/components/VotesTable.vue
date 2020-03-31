@@ -22,7 +22,7 @@
 
   export default {
     name: 'VotesTable',
-    props: ['values', 'workflowStatus', 'connections'],
+    props: ['workflowStatus', 'connections'],
     data () {
       return {
       }
