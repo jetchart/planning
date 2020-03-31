@@ -58,7 +58,7 @@ io.on('connection', socket => {
   /************* VOTES **************/
 
   socket.on('SEND_FINAL_VALUE', (data) => {
-    //socket.in(data.user.room).emit('FINAL_VALUE', data);
+    socket.in(data.user.room).emit('FINAL_VALUE');
     connectionService.resetVotes(data, connections);
     let connectionsRoom = connectionService.filterAllByRoom(data.user.room, connections);
     io.to(socket.id).emit('SYNC', connectionsRoom);
@@ -92,8 +92,8 @@ io.on('connection', socket => {
       taskService.deleteById(task.task.id, tasks);
       /* Sync tasks */
       let tasksRoom = taskService.filterAllByRoom(data.user.room, tasks);
-      io.to(socket.id).emit('SYNC_TASKS', tasksRoom);
-      socket.in(data.user.room).emit('SYNC_TASKS', tasksRoom);
+      io.to(socket.id).emit('DELETE_TASK', tasksRoom);
+      socket.in(data.user.room).emit('DELETE_TASK', tasksRoom);
     }
   });
 
@@ -104,6 +104,7 @@ io.on('connection', socket => {
 
 })
 
+/************* SERVER **************/
 const port = process.env.PORT || 3000
 http.listen(port , () => {
   console.log('Hostname:', os.hostname());

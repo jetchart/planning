@@ -30,9 +30,11 @@
         <task-history :administrator="administrator" :tasks="tasks" @sendDeleteTask="sendDeleteTask($event)"></task-history>
       </div>
     </div>
+    <!-- Modal final value -->
     <b-modal ref="modalFinalValue" title="Votation result" ok-only centered @hide="hide()">
       <p class="my-4">The final value is: <b>{{finalValue}}</b></p>
     </b-modal>
+    <!-- Modal new task -->
     <b-modal ref="newTaskModal" title="New task" centered @ok="newTask()">
       <div class="form-group">
         <label for="title">Task</label>
@@ -70,6 +72,7 @@
         administrator: false,
         showToastNewTask: false,
         showToastNewVote: false,
+        showToastTaskDeleted: false,
         workflowStatus: 1, /* 1: init, 2: vote, 3: confirm vote, 4: sendResult */
       }
     },
@@ -92,8 +95,6 @@
         let average = 0;
         let votesCount = 0;
         this.connections.forEach(con => {
-          console.log(con.value);
-          console.log(con.value != null);
           if (con.value) {
             sum += con.value
             votesCount++;
@@ -151,18 +152,8 @@
       },
       sendDeleteTask(id) {
         const data = { user: this.user, id: id};
+        this.showToastTaskDeleted = true;
         this.socket.emit('SEND_DELETE_TASK', data);
-        this.deleteTaskById(id);
-      },
-      deleteTaskById(id) {
-        let index = 0;
-        this.tasks.forEach(task => {
-          if (task.task.id == id)
-            return;
-          index++;
-        });
-        if (index < this.tasks.length)
-          this.tasks.splice(index, 1);
       },
       confirm() {
         const data = {  user: this.user,  value: this.value };
@@ -176,8 +167,6 @@
       },
       getValue() {
         this.socket.on('VALUE_CONFIRM', (connections) => {
-          console.log('VALUE_CONFIRM', connections);
-          //this.values.push(data);
           this.connections = connections;
           if (!this.showToastNewVote)
             this.makeToast('success', 'NEW VOTE!', `A new vote have been emited`);
@@ -187,19 +176,20 @@
       },
       getSync() {
         this.socket.on('SYNC', (data) => {
-          console.log('SYNC', data);
           this.connections = data;
+          if (this.connections.length === 1) {
+            this.makeToast('primary', 'Administrator', `You have automatically become an administrator`);
+            this.administrator = true;
+          }
         });
       },
       getSyncTasks() {
         this.socket.on('SYNC_TASKS', (data) => {
-          console.log('SYNC_TASKS', data);
           this.tasks = data;
         });
       },
       getFinalValue() {
-        this.socket.on('FINAL_VALUE', (data) => {
-          this.finalValue = data.finalValue;
+        this.socket.on('FINAL_VALUE', () => {
           this.$refs.modalFinalValue.show();
         });
       },
@@ -214,7 +204,10 @@
       },
       getDeleteTask() {
         this.socket.on('DELETE_TASK', (data) => {
-          this.deleteTaskById(id);
+          this.tasks = data;
+          if (!this.showToastTaskDeleted)
+            this.makeToast('danger', 'Task deleted', `One task have been deleted`);
+          this.showToastTaskDeleted = false;
         });
       },
       getReset() {
