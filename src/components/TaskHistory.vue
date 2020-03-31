@@ -7,7 +7,7 @@
         <th scope="col" align="left">Task</th>
         <th scope="col" align="center">Description</th>
         <th scope="col" align="center">Result</th>
-        <th scope="col" align="center">Delete</th>
+        <th scope="col" v-if="administrator" align="center">Delete</th>
       </tr>
       </thead>
       <tbody class="results">
@@ -16,7 +16,7 @@
         <td align="left">{{task.task.title}}</td>
         <td align="left">{{task.task.description}}</td>
         <td align="left">{{task.value}}</td>
-        <td align="left"><b-icon icon="trash" class="pointer" @click="$emit('sendDeleteTask', task.task.id)" ></b-icon></td>
+        <td align="left" v-if="administrator"><b-icon icon="trash" class="pointer" @click="$emit('sendDeleteTask', task.task.id)" ></b-icon></td>
         <!--<td align="left"><b-icon icon="trash" class="pointer" @click="$emit('sendDeleteTask', task.task.id)" v-b-tooltip.hover title="Delete task (also delete for other users)"></b-icon></td>-->
       </tr>
       </tbody>
@@ -28,7 +28,7 @@
 
   export default {
     name: 'TaskHistory',
-    props: ['tasks'],
+    props: ['tasks', 'administrator'],
     data () {
       return {
       }

@@ -16,14 +16,19 @@ app.get('/clients', (req, res) => {
   res.send(Object.keys(io.sockets.clients().connected))
 })
 
+var conectados = [];
+
 io.on('connection', socket => {
   console.log(`A user connected with socket id ${socket.id}`);
+
+  Object.keys(io.sockets.sockets).forEach((socketid) => {console.log(socketid)})
 
   socket.broadcast.emit('user-connected', socket.id)
 
   socket.on('subscribe', (user) => {
-    console.log('Subscribe', user);
     socket.join(user.room);
+    conectados.push({'id': socket.id, 'user': user});
+    io.to(socket.id).emit('sync', conectados);
   });
 
   socket.on('SEND_MESSAGE', (data) => {
@@ -52,7 +57,7 @@ io.on('connection', socket => {
 
   socket.on('disconnect', () => {
     console.log('socket: disconnected');
-    socket.broadcast.emit('user-disconnected', socket.id)
+    socket.broadcast.emit('user-disconnected', socket.id);
   })
 
   socket.on('confirm', (value) => {

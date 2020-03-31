@@ -7,11 +7,12 @@
         </div>
       </div>
       <div class="col-3">
-        <div align="right">
-          <button v-if="!(workflowStatus != 2 && workflowStatus != 3 && workflowStatus != 4)" class="btn btn-outline-danger btn-sm" @click="reset()" v-b-tooltip.hover title="Reset all votes from current task (reset also for other users)"><b-icon icon="trash"></b-icon></button>
+        <div class="col">
+          <b-form-checkbox v-model="administrator" name="check-button" switch>Administrator?</b-form-checkbox>
+          <button v-if="administrator && !(workflowStatus != 2 && workflowStatus != 3 && workflowStatus != 4)" class="btn btn-outline-danger btn-sm" @click="reset()" v-b-tooltip.hover title="Reset all votes from current task (reset also for other users)"><b-icon icon="trash"></b-icon></button>
         </div>
         <votes-table :values="values" :workflowStatus="workflowStatus"></votes-table>
-        <div v-if="workflowStatus == 4" class="input-group input-group-sm mb-3">
+        <div v-if="administrator && workflowStatus == 4" class="input-group input-group-sm mb-3">
           <input type="number" :disabled="workflowStatus != 4" v-model="finalValue" class="form-control" placeholder="Final value" aria-describedby="finalValue">
           <div class="input-group-append">
             <button :disabled="workflowStatus != 4 || !finalValue" @click="confirmTask()" class="btn btn-outline-success" type="button" id="finalValue-addon2" v-b-tooltip.hover title="Send the deciding vote"><b-icon icon="check"></b-icon></button>
@@ -21,12 +22,12 @@
     </div>
     <div class="row" align="left">
       <div class="col">
-        <task-view :workflowStatus="workflowStatus" :task="task" @openModalNewTask="openModalNewTask()"></task-view>
+        <task-view :administrator="administrator" :workflowStatus="workflowStatus" :task="task" @openModalNewTask="openModalNewTask()"></task-view>
       </div>
     </div>
     <div class="row" align="left">
       <div class="col">
-        <task-history :tasks="tasks" @sendDeleteTask="sendDeleteTask($event)"></task-history>
+        <task-history :administrator="administrator" :tasks="tasks" @sendDeleteTask="sendDeleteTask($event)"></task-history>
       </div>
     </div>
     <b-modal ref="modalFinalValue" title="Votation result" ok-only centered @hide="hide()">
@@ -65,6 +66,7 @@
         tasks: [],
         task: {},
         temporalTask: {},
+        administrator: false,
         workflowStatus: 1, /* 1: init, 2: vote, 3: confirm vote, 4: sendResult */
       }
     },
@@ -74,6 +76,7 @@
       this.getFinalValue();
       this.getNewTask();
       this.getDeleteTask();
+      this.getSync();
     },
     methods: {
       sendCard(value) {
@@ -162,6 +165,11 @@
           this.values.push(data);
           this.makeToast('success', 'NEW VOTE!', `${data.user.name} voted`);
           this.finalValue = this.getCalculateVotes();
+        });
+      },
+      getSync() {
+        this.socket.on('sync', (data) => {
+          console.log('sync', data);
         });
       },
       getFinalValue() {
