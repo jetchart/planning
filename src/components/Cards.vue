@@ -8,10 +8,10 @@
       </div>
       <div class="col-3">
         <div class="col">
-          <b-form-checkbox v-model="administrator" name="check-button" switch>Administrator?</b-form-checkbox>
-          <button v-if="administrator && !(workflowStatus != 2 && workflowStatus != 3 && workflowStatus != 4)" class="btn btn-outline-danger btn-sm" @click="reset()" v-b-tooltip.hover title="Reset all votes from current task (reset also for other users)"><b-icon icon="trash"></b-icon></button>
+          <b-form-checkbox v-model="administrator" name="check-button" switch><small>Administrator?</small></b-form-checkbox>
+          <!--<button v-if="administrator && !(workflowStatus != 2 && workflowStatus != 3 && workflowStatus != 4)" class="btn btn-outline-danger btn-sm" @click="reset()" v-b-tooltip.hover title="Reset all votes from current task (reset also for other users)"><b-icon icon="trash"></b-icon></button>-->
         </div>
-        <votes-table :values="values" :workflowStatus="workflowStatus"></votes-table>
+        <votes-table :connections="connections" :values="values" :workflowStatus="workflowStatus"></votes-table>
         <div v-if="administrator && workflowStatus == 4" class="input-group input-group-sm mb-3">
           <input type="number" :disabled="workflowStatus != 4" v-model="finalValue" class="form-control" placeholder="Final value" aria-describedby="finalValue">
           <div class="input-group-append">
@@ -64,6 +64,7 @@
         confirmed: false,
         confirmedTask: false,
         tasks: [],
+        connections: [],
         task: {},
         temporalTask: {},
         administrator: false,
@@ -86,8 +87,16 @@
       getCalculateVotes() {
         let sum = 0;
         let average = 0;
-        this.values.forEach(value => sum += value.value);
-        average = sum / this.values.length;
+        let votesCount = 0;
+        this.connections.forEach(con => {
+          console.log(con.value);
+          console.log(con.value != null);
+          if (con.value) {
+            sum += con.value
+            votesCount++;
+          }
+        });
+        average = sum / votesCount;
         if (average == 0.5)
           return average;
         return Math.round(average);
@@ -154,22 +163,25 @@
       confirm() {
         const data = {  user: this.user,  value: this.value };
         this.socket.emit('SEND_CONFIRM', data);
-        this.values.push(data);
+        //this.values.push(data);
         this.finalValue = this.getCalculateVotes();
         this.value = null;
         this.confirmed = true;
         this.workflowStatus = 4;
       },
       getValue() {
-        this.socket.on('VALUE_CONFIRM', (data) => {
-          this.values.push(data);
-          this.makeToast('success', 'NEW VOTE!', `${data.user.name} voted`);
+        this.socket.on('VALUE_CONFIRM', (connections) => {
+          console.log('VALUE_CONFIRM', connections);
+          //this.values.push(data);
+          this.connections = connections;
+          this.makeToast('success', 'NEW VOTE!', `A new vote have been emited`);
           this.finalValue = this.getCalculateVotes();
         });
       },
       getSync() {
-        this.socket.on('sync', (data) => {
-          console.log('sync', data);
+        this.socket.on('SYNC', (data) => {
+          console.log('SYNC', data);
+          this.connections = data;
         });
       },
       getFinalValue() {

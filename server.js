@@ -1,22 +1,24 @@
 var app = require('express')()
 var http = require('http').Server(app)
 var io = require('socket.io')(http)
-var os = require("os");
+const connectionService = require('./connectionService')
 
+var os = require("os");
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
   res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
-  res.setHeader('Access-Control-Allow-Credentials', true);
 
+  res.setHeader('Access-Control-Allow-Credentials', true);
   next();
+
 })
 
 app.get('/clients', (req, res) => {
   res.send(Object.keys(io.sockets.clients().connected))
 })
 
-var conectados = [];
+var connections = [];
 
 io.on('connection', socket => {
   console.log(`A user connected with socket id ${socket.id}`);
@@ -27,8 +29,10 @@ io.on('connection', socket => {
 
   socket.on('subscribe', (user) => {
     socket.join(user.room);
-    conectados.push({'id': socket.id, 'user': user});
-    io.to(socket.id).emit('sync', conectados);
+    connections.push({'id': socket.id, 'user': user});
+    const connectionsRoom = connectionService.filterAllByRoom(user.room, connections);
+    io.to(socket.id).emit('SYNC', connectionsRoom);
+    socket.in(user.room).emit('SYNC', connectionsRoom);
   });
 
   socket.on('SEND_MESSAGE', (data) => {
@@ -44,11 +48,19 @@ io.on('connection', socket => {
   });
 
   socket.on('SEND_FINAL_VALUE', (data) => {
+    console.log('SEND_FINAL_VALUE', data);
     socket.in(data.user.room).emit('FINAL_VALUE', data);
+    connectionService.resetVotes(data, connections);
+    let connectionsRoom = connectionService.filterAllByRoom(data.user.room, connections);
+    io.to(socket.id).emit('SYNC', connectionsRoom);
+    socket.in(data.user.room).emit('SYNC', connectionsRoom);
   });
 
   socket.on('SEND_CONFIRM', (data) => {
-    socket.in(data.user.room).emit('VALUE_CONFIRM', data);
+    connectionService.updateVote(socket.id, data, connections);
+    let connectionsRoom = connectionService.filterAllByRoom(data.user.room, connections);
+    io.to(socket.id).emit('VALUE_CONFIRM', connectionsRoom);
+    socket.in(data.user.room).emit('VALUE_CONFIRM', connectionsRoom);
   });
 
   socket.on('SEND_RESET', (data) => {
@@ -57,8 +69,12 @@ io.on('connection', socket => {
 
   socket.on('disconnect', () => {
     console.log('socket: disconnected');
-    socket.broadcast.emit('user-disconnected', socket.id);
-  })
+    const connection = connectionService.findById(socket.id, connections);
+    if (connection != null && connection.user.room != null) {
+      connectionService.deleteById(connection.id, connections);
+      socket.in(connection.user.room).emit('SYNC', connectionService.filterAllByRoom(connection.user.room, connections));
+    }
+  });
 
   socket.on('confirm', (value) => {
     console.log('socket: disconnected');

@@ -8,9 +8,10 @@
       </tr>
       </thead>
       <tbody class="results">
-      <tr v-for="value in values">
-        <td align="left">{{value.user.name}}</td>
-        <td align="center">{{workflowStatus > 3 ? value.value : '?'}}</td>
+      <tr v-for="connection in connections">
+        <td align="left">{{connection.user.name}}</td>
+        <td v-if="connection.value" align="center">{{workflowStatus > 3 ? connection.value : '?'}}</td>
+        <td v-else align="center">No vote</td>
       </tr>
       </tbody>
     </table>
@@ -21,7 +22,7 @@
 
   export default {
     name: 'VotesTable',
-    props: ['values', 'workflowStatus'],
+    props: ['values', 'workflowStatus', 'connections'],
     data () {
       return {
       }
