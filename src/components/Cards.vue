@@ -1,16 +1,27 @@
 <template>
-  <div class="container">
+  <div class="">
     <div class="row">
+      <!-- Task to evaluate -->
+      <div class="col" align="left">
+        <task-view :administrator="administrator" :workflowStatus="workflowStatus" :task="task" @openModalNewTask="openModalNewTask()"></task-view>
+      </div>
+      <!-- Administrator -->
+      <div class="col" align="right">
+        <b-form-checkbox v-model="administrator" name="check-button" switch><small>Administrator?</small></b-form-checkbox>
+      </div>
+    </div>
+    <hr>
+    <div class="row" align="center">
+      <!-- Cards -->
       <div class="col" v-for="option in options">
         <div style="max-width: 10rem;">
           <card :valueCard="option" :valueSelected="value" :confirmed="confirmed" :confirmedTask="confirmedTask" :workflowStatus="workflowStatus" @confirm="confirm()" @sendCard="sendCard($event)"></card>
         </div>
       </div>
-      <div class="col-3">
-        <div class="col">
-          <b-form-checkbox v-model="administrator" name="check-button" switch><small>Administrator?</small></b-form-checkbox>
-          <!--<button v-if="administrator && !(workflowStatus != 2 && workflowStatus != 3 && workflowStatus != 4)" class="btn btn-outline-danger btn-sm" @click="reset()" v-b-tooltip.hover title="Reset all votes from current task (reset also for other users)"><b-icon icon="trash"></b-icon></button>-->
-        </div>
+    </div>
+    <div class="row" align="left">
+      <!-- Votes table -->
+      <div class="col-md-4">
         <votes-table :connections="connections" :workflowStatus="workflowStatus"></votes-table>
         <div v-if="administrator && workflowStatus == 4" class="input-group input-group-sm mb-3">
           <input type="number" :disabled="workflowStatus != 4" v-model="finalValue" class="form-control" placeholder="Final value" aria-describedby="finalValue">
@@ -19,14 +30,10 @@
           </div>
         </div>
       </div>
-    </div>
-    <div class="row" align="left">
-      <div class="col">
-        <task-view :administrator="administrator" :workflowStatus="workflowStatus" :task="task" @openModalNewTask="openModalNewTask()"></task-view>
+      <div class="col-md-2">
       </div>
-    </div>
-    <div class="row" align="left">
-      <div class="col">
+      <!-- Task History -->
+      <div class="col-md-6">
         <task-history :administrator="administrator" :tasks="tasks" @sendDeleteTask="sendDeleteTask($event)"></task-history>
       </div>
     </div>
