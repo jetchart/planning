@@ -1,23 +1,26 @@
 <template>
   <div class="">
+    <div class="row adm">
+      <!-- Administrator -->
+      <div class="col" align="left">
+        <b-form-checkbox v-model="administrator" name="check-button" switch><small>Administrator?</small></b-form-checkbox>
+      </div>
+    </div>
     <div class="row">
       <!-- Task to evaluate -->
-      <div class="col" align="left">
+      <div class="col-md-5" align="left">
         <task-view :administrator="administrator" :workflowStatus="workflowStatus" :task="task" @openModalNewTask="openModalNewTask()"></task-view>
       </div>
-      <!-- Administrator -->
-      <div class="col" align="right">
-        <b-form-checkbox v-model="administrator" name="check-button" switch><small>Administrator?</small></b-form-checkbox>
+      <div v-if="workflowStatus === 2" class="col" v-for="option in options">
+        <div class="planning-card">
+          <card :valueCard="option" :valueSelected="value" :confirmed="confirmed" :confirmedTask="confirmedTask" :workflowStatus="workflowStatus" @confirm="confirm()" @sendCard="sendCard($event)"></card>
+        </div>
       </div>
     </div>
     <hr>
     <div class="row" align="center">
       <!-- Cards -->
-      <div class="col" v-for="option in options">
-        <div style="max-width: 10rem;">
-          <card :valueCard="option" :valueSelected="value" :confirmed="confirmed" :confirmedTask="confirmedTask" :workflowStatus="workflowStatus" @confirm="confirm()" @sendCard="sendCard($event)"></card>
-        </div>
-      </div>
+
     </div>
     <div class="row" align="left">
       <!-- Votes table -->
@@ -178,7 +181,7 @@
       getSync() {
         this.socket.on('SYNC', (data) => {
           this.connections = data;
-          if (this.connections.length === 1) {
+          if (!this.administrator && this.connections.length === 1) {
             this.makeToast('primary', 'Administrator', `You have automatically become an administrator`);
             this.administrator = true;
           }
@@ -226,17 +229,13 @@
 </script>
 
 <style>
+
   .planning-card {
-    width: 4rem;
+    max-width: 6rem;
+    max-height: 10rem;
   }
 
-  .table-results {
-    margin-top: 1rem;
-    font-size: 12px;
-  }
-
-  .results {
-    max-height: 100px;
-    overflow-y: scroll;
+  .adm {
+    padding-bottom: 0.5rem;
   }
 </style>
