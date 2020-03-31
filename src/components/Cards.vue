@@ -68,6 +68,8 @@
         task: {},
         temporalTask: {},
         administrator: false,
+        showToastNewTask: false,
+        showToastNewVote: false,
         workflowStatus: 1, /* 1: init, 2: vote, 3: confirm vote, 4: sendResult */
       }
     },
@@ -78,6 +80,7 @@
       this.getNewTask();
       this.getDeleteTask();
       this.getSync();
+      this.getSyncTasks();
     },
     methods: {
       sendCard(value) {
@@ -110,6 +113,7 @@
         const data = { user: this.user, task: this.task};
         this.socket.emit('SEND_NEW_TASK', data);
         this.workflowStatus = 2;
+        this.showToastNewTask = true;
       },
       reset() {
         const data = { user: this.user};
@@ -128,7 +132,7 @@
         })
       },
       saveHistoryTask(task, finalValue) {
-        this.tasks.push({task: task, value: finalValue});
+        //this.tasks.push({task: task, value: finalValue});
       },
       hide() {
         this.saveHistoryTask(this.task, this.finalValue);
@@ -140,7 +144,7 @@
       },
       confirmTask() {
         this.workflowStatus = 5;
-        const data = { user: this.user, finalValue: this.finalValue};
+        const data = { user: this.user, finalValue: this.finalValue, task: {...this.task, value: this.finalValue}};
         this.socket.emit('SEND_FINAL_VALUE', data);
         this.confirmed = false;
         this.$refs.modalFinalValue.show();
@@ -168,13 +172,16 @@
         this.value = null;
         this.confirmed = true;
         this.workflowStatus = 4;
+        this.showToastNewVote = true;
       },
       getValue() {
         this.socket.on('VALUE_CONFIRM', (connections) => {
           console.log('VALUE_CONFIRM', connections);
           //this.values.push(data);
           this.connections = connections;
-          this.makeToast('success', 'NEW VOTE!', `A new vote have been emited`);
+          if (!this.showToastNewVote)
+            this.makeToast('success', 'NEW VOTE!', `A new vote have been emited`);
+          this.showToastNewVote = false;
           this.finalValue = this.getCalculateVotes();
         });
       },
@@ -182,6 +189,12 @@
         this.socket.on('SYNC', (data) => {
           console.log('SYNC', data);
           this.connections = data;
+        });
+      },
+      getSyncTasks() {
+        this.socket.on('SYNC_TASKS', (data) => {
+          console.log('SYNC_TASKS', data);
+          this.tasks = data;
         });
       },
       getFinalValue() {
@@ -194,7 +207,9 @@
         this.socket.on('NEW_TASK', (data) => {
           this.task = data.task;
           this.workflowStatus = 2;
-          this.makeToast('secondary', 'NEW TASK!', 'There is a new task to be evaluated');
+          if (!this.showToastNewTask)
+            this.makeToast('secondary', 'NEW TASK!', 'There is a new task to be evaluated');
+          this.showToastNewTask = false;
         });
       },
       getDeleteTask() {

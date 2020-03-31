@@ -2,6 +2,7 @@ var app = require('express')()
 var http = require('http').Server(app)
 var io = require('socket.io')(http)
 const connectionService = require('./connectionService')
+const taskService = require('./taskService')
 
 var os = require("os");
 app.use((req, res, next) => {
@@ -19,6 +20,7 @@ app.get('/clients', (req, res) => {
 })
 
 var connections = [];
+var tasks = [];
 
 io.on('connection', socket => {
   console.log(`A user connected with socket id ${socket.id}`);
@@ -26,6 +28,8 @@ io.on('connection', socket => {
   Object.keys(io.sockets.sockets).forEach((socketid) => {console.log(socketid)})
 
   socket.broadcast.emit('user-connected', socket.id)
+
+  /************* CONECTIONS **************/
 
   socket.on('subscribe', (user) => {
     socket.join(user.room);
@@ -35,25 +39,43 @@ io.on('connection', socket => {
     socket.in(user.room).emit('SYNC', connectionsRoom);
   });
 
+  socket.on('disconnect', () => {
+    console.log('socket: disconnected');
+    const connection = connectionService.findById(socket.id, connections);
+    if (connection != null && connection.user.room != null) {
+      /* SYNC */
+      connectionService.deleteById(connection.id, connections);
+      socket.in(connection.user.room).emit('SYNC', connectionService.filterAllByRoom(connection.user.room, connections));
+      /* Delete tasks if nobody in room */
+      if (connectionService.filterAllByRoom(connection.user.room, connections).length == 0) {
+        console.log("Delete tasks from room " + connection.user.room);
+        let tasksRoom = taskService.filterAllByRoom(connection.user.room, tasks);
+        tasksRoom.forEach(task => {
+          taskService.deleteById(task.task.id, tasks);
+        });
+      }
+    }
+  });
+
+  /************* CHAT **************/
+
   socket.on('SEND_MESSAGE', (data) => {
     socket.in(data.user.room).emit('MESSAGE', data);
   });
 
-  socket.on('SEND_NEW_TASK', (data) => {
-    socket.in(data.user.room).emit('NEW_TASK', data);
-  });
-
-  socket.on('SEND_DELETE_TASK', (data) => {
-    socket.in(data.user.room).emit('DELETE_TASK', data);
-  });
+  /************* VOTES **************/
 
   socket.on('SEND_FINAL_VALUE', (data) => {
-    console.log('SEND_FINAL_VALUE', data);
     socket.in(data.user.room).emit('FINAL_VALUE', data);
     connectionService.resetVotes(data, connections);
     let connectionsRoom = connectionService.filterAllByRoom(data.user.room, connections);
     io.to(socket.id).emit('SYNC', connectionsRoom);
     socket.in(data.user.room).emit('SYNC', connectionsRoom);
+    /* Tasks */
+    tasks.push({'room': data.user.room, 'task': data.task});
+    let tasksRoom = taskService.filterAllByRoom(data.user.room, tasks);
+    io.to(socket.id).emit('SYNC_TASKS', tasksRoom);
+    socket.in(data.user.room).emit('SYNC_TASKS', tasksRoom);
   });
 
   socket.on('SEND_CONFIRM', (data) => {
@@ -61,20 +83,32 @@ io.on('connection', socket => {
     let connectionsRoom = connectionService.filterAllByRoom(data.user.room, connections);
     io.to(socket.id).emit('VALUE_CONFIRM', connectionsRoom);
     socket.in(data.user.room).emit('VALUE_CONFIRM', connectionsRoom);
+
+  });
+
+  /************* TASKS **************/
+
+  socket.on('SEND_NEW_TASK', (data) => {
+    socket.in(data.user.room).emit('NEW_TASK', data);
+  });
+
+  socket.on('SEND_DELETE_TASK', (data) => {
+    //socket.in(data.user.room).emit('DELETE_TASK', data);
+    /* Delete task */
+    const task = taskService.findById(data.id, tasks);
+    if (task != null && task.room != null) {
+      taskService.deleteById(task.task.id, tasks);
+      /* Sync tasks */
+      let tasksRoom = taskService.filterAllByRoom(data.user.room, tasks);
+      io.to(socket.id).emit('SYNC_TASKS', tasksRoom);
+      socket.in(data.user.room).emit('SYNC_TASKS', tasksRoom);
+    }
   });
 
   socket.on('SEND_RESET', (data) => {
     socket.in(data.user.room).emit('RESET', data);
   });
 
-  socket.on('disconnect', () => {
-    console.log('socket: disconnected');
-    const connection = connectionService.findById(socket.id, connections);
-    if (connection != null && connection.user.room != null) {
-      connectionService.deleteById(connection.id, connections);
-      socket.in(connection.user.room).emit('SYNC', connectionService.filterAllByRoom(connection.user.room, connections));
-    }
-  });
 
   socket.on('confirm', (value) => {
     console.log('socket: disconnected');
@@ -84,10 +118,6 @@ io.on('connection', socket => {
     })
   })
 
-  socket.on('nudge-client', data => {
-    console.log('llegó el nudge al socket');
-    socket.broadcast.to(data.to).emit('client-nudged', data)
-  })
 })
 
 const port = process.env.PORT || 3000
