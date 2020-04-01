@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="content" v-bind:class="{ 'content': getConnected }">
     <room v-if="!getConnected" :socket="socket" :user="user" @save="setUser($event)"></room>
     <cards v-if="getConnected" :socket="socket" :user="user" :options="options"></cards>
     <chat v-if="getConnected"  :socket="socket" :user="user"></chat>
@@ -20,8 +20,8 @@
         user: null,
         user: {},
         url: process.env.VUE_APP_URL_EXPRESS_SERVER || 'localhost:3000',
-        socket : io('https://planning-vue.herokuapp.com/'),
-        //socket : io('localhost:3000'),
+        //socket : io('https://planning-vue.herokuapp.com/'),
+        socket : io('localhost:3000'),
         options: [0.5, 1, 2, 3, 5]
       }
     },
@@ -47,4 +47,16 @@
 </script>
 
 <style>
+
+  .content {
+    height: 65%;
+    margin: 4rem;
+    padding:20px;
+    overflow-y: scroll;
+    border-radius: 10px;
+    -webkit-box-shadow: 0px 0px 8px 0px rgba(0,0,0,0.29);
+    -moz-box-shadow: 0px 0px 8px 0px rgba(0,0,0,0.29);
+    box-shadow: 0px 0px 8px 0px rgba(0,0,0,0.29);
+  }
+
 </style>

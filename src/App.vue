@@ -2,7 +2,7 @@
   <div id="app">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <header-custom></header-custom>
-    <div class="content card bg-light">
+    <div class="bg-light">
       <router-view></router-view>
     </div>
   </div>
@@ -12,6 +12,7 @@
   import 'bootstrap/dist/css/bootstrap.css'
   import 'bootstrap-vue/dist/bootstrap-vue.css'
   import HeaderCustom from './components/Header'
+  import {mapGetters} from "vuex";
 
 export default {
   name: 'app',
@@ -52,17 +53,6 @@ li {
 
 a {
   color: #42b983;
-}
-
-.content {
-  height: 65%;
-  margin: 4rem;
-  padding:20px;
-  overflow-y: scroll;
-  border-radius: 10px;
-  -webkit-box-shadow: 0px 0px 8px 0px rgba(0,0,0,0.29);
-  -moz-box-shadow: 0px 0px 8px 0px rgba(0,0,0,0.29);
-  box-shadow: 0px 0px 8px 0px rgba(0,0,0,0.29);
 }
 
 </style>
