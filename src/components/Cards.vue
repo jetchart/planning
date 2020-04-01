@@ -1,14 +1,12 @@
 <template>
   <div class="">
-    <div class="row adm">
-      <!-- Administrator -->
-      <div class="col" align="left">
-        <b-form-checkbox v-model="administrator" name="check-button" switch><small>Administrator?</small></b-form-checkbox>
-      </div>
-    </div>
     <div class="row">
       <!-- Task to evaluate -->
       <div class="col-md-8" align="left">
+        <div align="left">
+          <b-form-checkbox v-model="administrator" name="check-button" switch><small>Administrator?</small></b-form-checkbox>
+        </div>
+        <br>
         <task-view :administrator="administrator" :workflowStatus="workflowStatus" :task="task" @openModalNewTask="openModalNewTask()"></task-view>
       </div>
       <!-- Votes table -->
@@ -228,8 +226,7 @@
 <style>
 
   .planning-card {
-    max-width: 6rem;
-    max-height: 10rem;
+    width: 8rem;
   }
 
   .adm {
