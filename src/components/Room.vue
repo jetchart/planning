@@ -42,6 +42,7 @@
         this.$store.commit('join',this.user);
         this.socket.emit('subscribe', this.user);
         this.$emit('save', this.user);
+        window.scrollTo(0, 0);
       }
     },
     watch: {
