@@ -8,23 +8,11 @@
     </div>
     <div class="row">
       <!-- Task to evaluate -->
-      <div class="col-md-5" align="left">
+      <div class="col-md-8" align="left">
         <task-view :administrator="administrator" :workflowStatus="workflowStatus" :task="task" @openModalNewTask="openModalNewTask()"></task-view>
       </div>
-      <div v-if="workflowStatus === 2" class="col" v-for="option in options">
-        <div class="planning-card">
-          <card :valueCard="option" :valueSelected="value" :confirmed="confirmed" :confirmedTask="confirmedTask" :workflowStatus="workflowStatus" @confirm="confirm()" @sendCard="sendCard($event)"></card>
-        </div>
-      </div>
-    </div>
-    <hr>
-    <div class="row" align="center">
-      <!-- Cards -->
-
-    </div>
-    <div class="row" align="left">
       <!-- Votes table -->
-      <div class="col-md-4">
+      <div class="col-md-4 votes-table">
         <votes-table :connections="connections" :workflowStatus="workflowStatus"></votes-table>
         <div v-if="administrator && workflowStatus == 4" class="input-group input-group-sm mb-3">
           <input type="number" :disabled="workflowStatus != 4" v-model="finalValue" class="form-control" placeholder="Final value" aria-describedby="finalValue">
@@ -33,10 +21,19 @@
           </div>
         </div>
       </div>
-      <div class="col-md-2">
+    </div>
+    <hr>
+    <div class="row" align="center">
+      <!-- Cards -->
+      <div v-if="workflowStatus === 2 || workflowStatus === 3" class="col" v-for="option in options">
+        <div class="planning-card">
+          <card :valueCard="option" :valueSelected="value" :confirmed="confirmed" :confirmedTask="confirmedTask" :workflowStatus="workflowStatus" @confirm="confirm()" @sendCard="sendCard($event)"></card>
+        </div>
       </div>
+    </div>
+    <div class="row" align="left">
       <!-- Task History -->
-      <div class="col-md-6">
+      <div class="col task-history">
         <task-history :administrator="administrator" :tasks="tasks" @sendDeleteTask="sendDeleteTask($event)"></task-history>
       </div>
     </div>
@@ -238,4 +235,15 @@
   .adm {
     padding-bottom: 0.5rem;
   }
+
+  .votes-table {
+       max-height: 12rem;
+       overflow-y: scroll;
+   }
+
+  .task-history {
+    max-height: 12rem;
+    overflow-y: scroll;
+  }
+
 </style>
