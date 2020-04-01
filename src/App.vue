@@ -11,7 +11,7 @@
 <script>
   import 'bootstrap/dist/css/bootstrap.css'
   import 'bootstrap-vue/dist/bootstrap-vue.css'
-  import HeaderCustom from './components/Header'
+  import HeaderCustom from './components/HeaderOrig'
   import {mapGetters} from "vuex";
 
 export default {
@@ -59,7 +59,7 @@ a {
 }
 
 .content {
-  height: 70%;
+  height: 65%;
   margin: 2rem;
   padding:20px;
   overflow-y: scroll;

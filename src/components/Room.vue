@@ -55,7 +55,7 @@
     justify-items: center;
   }
   .room {
-    margin-top: 2rem;
+    margin: 2rem;
     max-width: 20rem;
     border-radius: 15px;
     -webkit-box-shadow: 0px 0px 14px -3px rgba(0,0,0,0.75);
