@@ -5,6 +5,9 @@
         <!--<img width="50" height="45" class="logo" src="../../public/assets/j.jpg" alt="">-->
         <span class="brand">PLANNING POKER</span>
       </div>
+      <div class="col" align="center">
+        <b-icon font-scale="1.5" icon="exclamation-circle-fill" variant="secondary" @click="$refs.modalHelp.show()" ></b-icon>
+      </div>
       <div v-if="getConnected" class="col" align="right">
         <b-dropdown dropleft size="sm" class="m-2" variant="secondary" toggle-class="text-decoration-none" >
           <template v-slot:button-content>
@@ -19,6 +22,15 @@
         <small>No connected</small>
       </div>
     </div>
+    <b-modal ref="modalHelp" title="Help" ok-only centered>
+      <small>
+      <span class="my-4">1. Fill name and room, click join</span><br>
+      <span class="my-4">2. Wait for others persons to join</span><br>
+      <span class="my-4">3. Create a new task (only administrators)</span><br>
+      <span class="my-4">4. Vote using the cards and wait others to vote</span><br>
+      <span class="my-4">5. Choose final result and send it (only administrators)</span>
+      </small>
+    </b-modal>
   </div>
 </template>
 
