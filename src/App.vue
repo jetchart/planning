@@ -2,7 +2,7 @@
   <div id="app">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <header-custom></header-custom>
-    <div class="bg-light" v-bind:class="{'content': getConnected}">
+    <div v-bind:class="{'content': getConnected, 'bg-light': getConnected}">
       <router-view></router-view>
     </div>
   </div>
