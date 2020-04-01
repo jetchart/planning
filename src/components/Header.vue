@@ -38,11 +38,12 @@
     },
     methods: {
       quit() {
+        this.getSocket.emit('unsubscribe');
         this.$store.commit("unjoin");
       },
     },
     computed: {
-      ...mapGetters([ 'getUser', 'getConnected', ])
+      ...mapGetters([ 'getUser', 'getConnected', 'getSocket'])
     },
     mounted(){
     },

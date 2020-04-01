@@ -6,11 +6,15 @@ Vue.use(Vuex);
 export default new Vuex.Store({
   state: {
     connected: false,
-    user: null
+    user: null,
+    socket: null
   },
   getters: {
     getConnected: state => {
       return state.connected;
+    },
+    getSocket: state => {
+      return state.socket;
     },
     getUser: state => {
       return state.user;
@@ -22,6 +26,9 @@ export default new Vuex.Store({
     join (state, value) {
       state.connected = true;
       state.user = value;
+    },
+    setSocket (state, value) {
+      state.socket = value;
     },
     unjoin (state) {
       state.connected = false;

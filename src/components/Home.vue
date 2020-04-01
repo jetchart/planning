@@ -26,7 +26,7 @@
       }
     },
     computed: {
-      ...mapGetters([ 'getUser', 'getConnected', ])
+      ...mapGetters([ 'getUser', 'getConnected', 'getSocket'])
     },
     methods: {
       setUser(user) {
@@ -38,6 +38,7 @@
     },
     mounted() {
       console.log('Express Server:', process.env);
+      this.$store.commit("setSocket", this.socket);
       this.readParameters();
     },
     watch: {

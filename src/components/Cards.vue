@@ -1,5 +1,6 @@
 <template>
   <div class="">
+    <b-overlay :show="showOverlay" rounded="sm">
     <div class="row">
       <!-- Task to evaluate -->
       <div class="col-md-8" align="left">
@@ -50,6 +51,7 @@
         <textarea v-model="temporalTask.description" class="form-control" id="description" rows="3"></textarea>
       </div>
     </b-modal>
+    </b-overlay>
   </div>
 </template>
 
@@ -78,6 +80,7 @@
         showToastNewVote: false,
         showToastTaskDeleted: false,
         workflowStatus: 1, /* 1: init, 2: vote, 3: confirm vote, 4: sendResult */
+        showOverlay: true
       }
     },
     computed: {
@@ -98,6 +101,7 @@
       this.getDeleteTask();
       this.getSync();
       this.getSyncTasks();
+      this.showOverlay = false;
     },
     methods: {
       sendCard(value) {

@@ -28,6 +28,23 @@ io.on('connection', socket => {
     console.log('tasks', tasksRoom);
   });
 
+  socket.on('unsubscribe', () => {
+    const connection = connectionService.findById(socket.id, connections);
+    if (connection != null && connection.user.room != null) {
+      /* SYNC */
+      connectionService.deleteById(connection.id, connections);
+      socket.in(connection.user.room).emit('SYNC', connectionService.filterAllByRoom(connection.user.room, connections));
+      /* Delete tasks if nobody in room */
+      if (connectionService.filterAllByRoom(connection.user.room, connections).length == 0) {
+        console.log("Delete tasks from room " + connection.user.room);
+        let tasksRoom = taskService.filterAllByRoom(connection.user.room, tasks);
+        tasksRoom.forEach(task => {
+          taskService.deleteById(task.task.id, tasks);
+        });
+      }
+    }
+  });
+
   socket.on('disconnect', () => {
     //console.log('socket: disconnected');
     const connection = connectionService.findById(socket.id, connections);
@@ -44,9 +61,6 @@ io.on('connection', socket => {
         });
       }
     }
-
-    console.log('connections', connections);
-    console.log('tasks', tasks);
   });
 
   /************* CHAT **************/
