@@ -57,7 +57,7 @@
     text-align: center;
     background: #1abc9c;
     color: white;
-    text-transform: uppercase;
+    //text-transform: uppercase;
     font-size: 1rem;
     font-family: Montserrat,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
     font-weight: 700;

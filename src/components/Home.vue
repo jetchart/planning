@@ -1,5 +1,5 @@
 <template>
-  <div v-bind:class="{ 'content': getConnected }">
+  <div>
     <room v-if="!getConnected" :socket="socket" :user="user" @save="setUser($event)"></room>
     <cards v-if="getConnected" :socket="socket" :user="user" :options="options"></cards>
     <chat v-if="getConnected"  :socket="socket" :user="user"></chat>
@@ -47,16 +47,4 @@
 </script>
 
 <style>
-
-  .content {
-    height: 65%;
-    margin: 4rem;
-    padding:20px;
-    overflow-y: scroll;
-    border-radius: 10px;
-    -webkit-box-shadow: 0px 0px 8px 0px rgba(0,0,0,0.29);
-    -moz-box-shadow: 0px 0px 8px 0px rgba(0,0,0,0.29);
-    box-shadow: 0px 0px 8px 0px rgba(0,0,0,0.29);
-  }
-
 </style>

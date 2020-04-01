@@ -2,7 +2,7 @@
   <div id="app">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <header-custom></header-custom>
-    <div class="bg-light">
+    <div class="bg-light" v-bind:class="{'content': getConnected}">
       <router-view></router-view>
     </div>
   </div>
@@ -16,6 +16,9 @@
 
 export default {
   name: 'app',
+  computed: {
+    ...mapGetters([ 'getConnected', ])
+  },
   data () {
     return {
       msg: 'Welcome to Your Vue.js App'
@@ -53,6 +56,17 @@ li {
 
 a {
   color: #42b983;
+}
+
+.content {
+  height: 65%;
+  margin: 4rem;
+  padding:20px;
+  overflow-y: scroll;
+  border-radius: 10px;
+  -webkit-box-shadow: 0px 0px 8px 0px rgba(0,0,0,0.29);
+  -moz-box-shadow: 0px 0px 8px 0px rgba(0,0,0,0.29);
+  box-shadow: 0px 0px 8px 0px rgba(0,0,0,0.29);
 }
 
 </style>
