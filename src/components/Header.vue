@@ -1,24 +1,24 @@
 <template>
   <div class="header">
     <div class="row">
-      <div class="col-2" align="left">
+      <div class="col" align="left">
         <!--<img width="50" height="45" class="logo" src="../../public/assets/j.jpg" alt="">-->
       </div>
       <template v-if="getConnected" >
-        <div class="col-5"></div>
-        <div class="col-2" align="right">
+        <div class="col"></div>
+        <div class="col" align="right">
           <span>User: {{getUser.name}}</span>
         </div>
-        <div class="col-2" align="right">
+        <div class="col" align="right">
           <span>Room: {{getUser.room}}</span>
         </div>
-        <div class="col-1" align="right">
+        <div class="col" align="right">
           <b-button @click="quit()" size="sm" variant="danger" class="mb-2">
             <b-icon icon="power"></b-icon>
           </b-button>
         </div>
       </template>
-      <div v-else class="col-10 no-connected" align="right">
+      <div v-else class="col-md-10 no-connected" align="right">
         <small>No connected</small>
       </div>
     </div>
