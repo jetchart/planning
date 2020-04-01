@@ -20,8 +20,8 @@
         user: null,
         user: {},
         url: process.env.VUE_APP_URL_EXPRESS_SERVER || 'localhost:3000',
-        //socket : io('https://planning-vue.herokuapp.com/'),
-        socket : io('localhost:3000'),
+        socket : io('https://planning-vue.herokuapp.com/'),
+        //socket : io('localhost:3000'),
         options: [0.5, 1, 2, 3, 5]
       }
     },
