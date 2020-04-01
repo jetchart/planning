@@ -1,5 +1,5 @@
 <template>
-  <div class="content" v-bind:class="{ 'content': getConnected }">
+  <div v-bind:class="{ 'content': getConnected }">
     <room v-if="!getConnected" :socket="socket" :user="user" @save="setUser($event)"></room>
     <cards v-if="getConnected" :socket="socket" :user="user" :options="options"></cards>
     <chat v-if="getConnected"  :socket="socket" :user="user"></chat>
