@@ -101,7 +101,6 @@
       this.getDeleteTask();
       this.getSync();
       this.getSyncTasks();
-      this.showOverlay = false;
     },
     methods: {
       sendCard(value) {
@@ -184,6 +183,7 @@
             this.makeToast('primary', 'Administrator', `You have automatically become an administrator`);
             this.administrator = true;
           }
+          this.showOverlay = false;
         });
       },
       getSyncTasks() {

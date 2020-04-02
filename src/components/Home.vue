@@ -1,6 +1,6 @@
 <template>
   <div>
-    <room v-if="!getConnected" :socket="socket" :user="user" @save="setUser($event)"></room>
+    <room v-if="!getConnected" :socket="socket" :user="user" @setUser="setUser($event)"></room>
     <cards v-if="getConnected" :socket="socket" :user="user" :options="options"></cards>
     <chat v-if="getConnected"  :socket="socket" :user="user"></chat>
   </div>
@@ -29,17 +29,30 @@
       ...mapGetters([ 'getUser', 'getConnected', 'getSocket'])
     },
     methods: {
-      setUser(user) {
-        this.user = user;
-      },
       readParameters() {
         this.user = {name: this.$route.query.name, room: this.$route.query.room}
+      },
+      setUser(user) {
+        this.user = user;
+        if (!this.user.name || !this.user.room)
+          return;
+        this.subscribe();
+      },
+      subscribe() {
+        this.$store.commit('join',this.user);
+        this.socket.emit('subscribe', this.user);
+        window.scrollTo(0, 0);
       },
     },
     mounted() {
       console.log('Express Server:', process.env);
       this.$store.commit("setSocket", this.socket);
       this.readParameters();
+      console.log(localStorage.getItem('name'));
+      this.user.name = localStorage.getItem('name') || '';
+      this.user.room = localStorage.getItem('room') || '';
+      if (this.user.name && this.user.room)
+        this.subscribe();
     },
     watch: {
     },

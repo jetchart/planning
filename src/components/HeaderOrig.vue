@@ -49,6 +49,8 @@
       quit() {
         this.getSocket.emit('unsubscribe');
         this.$store.commit("unjoin");
+        localStorage.removeItem('name');
+        localStorage.removeItem('room');
       },
     },
     computed: {

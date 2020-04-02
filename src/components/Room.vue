@@ -8,13 +8,13 @@
           <div class="card-title">
             <div class="form-group" align="left">
               <label for="name">Name</label>
-              <input v-model="user.name" v-on:keyup.enter="subscribe()" type="text" class="form-control" id="name">
+              <input v-model="user.name" v-on:keyup.enter="setUser()" type="text" class="form-control" id="name">
             </div>
             <div class="form-group" align="left">
               <label for="room">Room</label>
-              <input v-model="user.room" v-on:keyup.enter="subscribe()" type="text" class="form-control" id="room">
+              <input v-model="user.room" v-on:keyup.enter="setUser()" type="text" class="form-control" id="room">
             </div>
-            <button :disabled="!user.name || !user.room" class="btn btn-primary" @click="subscribe()">Join</button>
+            <button :disabled="!user.name || !user.room" class="btn btn-primary" @click="setUser()">Join</button>
           </div>
         </div>
       </div>
@@ -36,13 +36,12 @@
     mounted() {
     },
     methods: {
-      subscribe() {
+      setUser() {
         if (!this.user.name || !this.user.room)
           return;
-        this.$store.commit('join',this.user);
-        this.socket.emit('subscribe', this.user);
-        this.$emit('save', this.user);
-        window.scrollTo(0, 0);
+        this.$emit('setUser', this.user);
+        localStorage.setItem('name', this.user.name);
+        localStorage.setItem('room', this.user.room);
       }
     },
     watch: {
