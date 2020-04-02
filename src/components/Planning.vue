@@ -44,7 +44,7 @@
         this.$router.push("/");
       this.socket = this.getSocket;
       if (!this.socket) {
-        this.socket = io('localhost:3000');
+        this.socket = io('https://planning-vue.herokuapp.com/');
         this.$store.commit("setSocket", this.socket);
       }
       this.subscribe();
