@@ -27,7 +27,7 @@
 
   export default {
     name: 'Rooms',
-    props: ['socket', 'user'],
+    props: [ 'user'],
     data () {
       return {
         connected: false,

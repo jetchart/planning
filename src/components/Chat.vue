@@ -40,9 +40,14 @@
 
 <script>
 
+  import {mapGetters} from "vuex";
+
   export default {
     name: 'Chat',
     props: ['socket', 'user'],
+    computed: {
+      ...mapGetters([ 'getSocket'])
+    },
     data () {
       return {
         messages: [],
@@ -52,6 +57,7 @@
       }
     },
     mounted() {
+      this.socket = this.getSocket;
       this.getMessage();
     },
     methods: {
