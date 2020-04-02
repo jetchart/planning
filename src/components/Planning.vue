@@ -17,9 +17,7 @@
     data () {
       return {
         user: {},
-        url: process.env.VUE_APP_URL_EXPRESS_SERVER || 'localhost:3000',
-        //socket : io('https://planning-vue.herokuapp.com/'),
-        //socket : io('localhost:3000'),
+        url: location.hostname === 'localhost' ? 'localhost:3000' : 'https://planning-vue.herokuapp.com/',
         options: [0.5, 1, 2, 3, 5]
       }
     },
@@ -31,7 +29,6 @@
         this.user = {name: this.$route.query.name, room: this.$route.query.room}
       },
       subscribe() {
-        console.log(this.user);
         this.$store.commit('join',this.user);
         this.socket.emit('subscribe', this.user);
         window.scrollTo(0, 0);
@@ -44,7 +41,7 @@
         this.$router.push("/");
       this.socket = this.getSocket;
       if (!this.socket) {
-        this.socket = io('https://planning-vue.herokuapp.com/');
+        this.socket = io(this.url);
         this.$store.commit("setSocket", this.socket);
       }
       this.subscribe();

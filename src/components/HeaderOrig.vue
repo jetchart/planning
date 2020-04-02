@@ -47,9 +47,12 @@
     },
     methods: {
       quit() {
+        this.unsubscribe();
+        this.$router.push("/");
+      },
+      unsubscribe() {
         this.getSocket.emit('unsubscribe');
         this.$store.commit("unjoin");
-        this.$router.push("/");
       },
     },
     computed: {

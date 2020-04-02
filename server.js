@@ -15,8 +15,13 @@ io.on('connection', socket => {
   /************* CONECTIONS **************/
 
   socket.on('subscribe', (user) => {
-    socket.join(user.room);
-    connections.push({'id': socket.id, 'user': user});
+
+    //Check exists
+    const connection = connectionService.findById(socket.id, connections);
+    if (connection === undefined) {
+      socket.join(user.room);
+      connections.push({'id': socket.id, 'user': user});
+    }
     const connectionsRoom = connectionService.filterAllByRoom(user.room, connections);
     socket.in(user.room).emit('SYNC', connectionsRoom);
     io.to(socket.id).emit('SYNC', connectionsRoom);

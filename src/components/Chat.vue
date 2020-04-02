@@ -4,9 +4,10 @@
       <div class="card-header" align="right">
         <b-button class="btn btn-sm btn-secondary" @click="toggleCollapse()">
           <b-icon icon="box-arrow-in-down-left"></b-icon>
+          <b-badge v-if="messagesNoReaded > 0" variant="light">{{messagesNoReaded}}</b-badge>
         </b-button>
       </div>
-      <div class="card-body chat-no-collapse" align="left">
+      <div class="card-body chat-no-collapse" align="left" @mouseover="algo()">
         <div class="card-title messages">
           <div>
             <div class="row" v-for="message in messages">
@@ -53,7 +54,7 @@
         messages: [],
         message: '',
         collapse: true,
-        messagesNoReaded: 0,
+        messagesNoReaded:  0,
       }
     },
     mounted() {
@@ -61,10 +62,13 @@
       this.getMessage();
     },
     methods: {
+      algo() {
+        console.log("algo");
+        this.messagesNoReaded = 0;
+      },
       toggleCollapse() {
         this.collapse = !this.collapse;
-        if (!this.collapse)
-          this.messagesNoReaded = 0;
+        this.messagesNoReaded = 0;
       },
       sendMessage() {
         if (!this.message)
@@ -77,8 +81,7 @@
       getMessage() {
         this.socket.on('MESSAGE', (data) => {
           this.messages = [...this.messages, data];
-          if (this.collapse)
-            this.messagesNoReaded++;
+          this.messagesNoReaded++;
         });
       },
     },

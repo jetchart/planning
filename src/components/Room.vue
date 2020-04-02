@@ -1,5 +1,5 @@
 <template>
-  <div >
+  <div>
     <div class="row">
     <div class="col" align="center">
       <div class="card bg-light mb-3 room">

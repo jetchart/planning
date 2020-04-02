@@ -138,7 +138,8 @@
           title: title,
           variant: variant,
           solid: true
-        })
+        });
+        window.scrollTo(0, 0);
       },
       hide() {
         this.finalValue = null;
