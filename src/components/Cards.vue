@@ -8,13 +8,14 @@
           <b-icon id="share" font-scale="1" icon="link" variant="secondary"></b-icon>
           <b-popover target="share" triggers="hover" placement="top">
             <template v-slot:title>Share planning!</template>
-
-            <div class="input-group input-group-sm mb-3">
+            <div class="input-group input-group-sm" >
               <div class="input-group-prepend">
                 <span id="url">{{urlToShare}}</span>
               </div>
-              <button v-if="!showCheck" type="button" v-clipboard:copy="urlToShare" v-clipboard:success="onCopy" aria-describedby="url" class="form-control btn btn-sm btn-link"><b-icon font-scale="1" icon="clipboard" variant="secondary"></b-icon></button>
-              <button v-if="showCheck" type="button" aria-describedby="url" class="form-control btn btn-sm btn-link"><b-icon font-scale="1" icon="check" variant="secondary"></b-icon></button>
+              <button type="button" v-clipboard:copy="urlToShare" v-clipboard:success="onCopy" aria-describedby="url" class="form-control btn btn-sm btn-link " >
+                <b-icon font-scale="1" icon="clipboard"  variant="secondary" ></b-icon>
+              </button>
+              &nbsp;<small class="check" v-bind:class="{'clipboard-check': showCheck}">Copied!</small>
             </div>
 
           </b-popover>
@@ -282,6 +283,20 @@
 
   #url {
     margin: 5px;
+  }
+
+  .check {
+    opacity: 0;
+    transition: opacity 0.5s;
+    color: mediumseagreen;
+  }
+
+  .clipboard-check {
+    opacity: 1;
+  }
+
+  .popover-body {
+    padding: 0.5rem 0.75rem 0 !important;
   }
 
 </style>
