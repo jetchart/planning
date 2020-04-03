@@ -22,7 +22,7 @@
         <small>No connected</small>
       </div>
     </div>
-    <b-modal ref="modalHelp" title="Help" ok-only centered>
+    <b-modal ref="modalHelp" title="How to use it" ok-only centered>
       <small>
       <span class="my-4">1. Fill name and room, click join</span><br>
       <span class="my-4">2. Wait for others persons to join</span><br>

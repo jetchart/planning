@@ -9,7 +9,12 @@ export default new Router({
   routes: [
     {
       path: '/',
+      name: 'Home',
       component: Home
+    },
+    {
+      path: '*',
+      redirect: {name: 'Home'},
     },
     {
       path: '/planning/:room',

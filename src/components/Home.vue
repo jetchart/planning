@@ -1,6 +1,6 @@
 <template>
   <div>
-    <room  :user="user" @setUser="setUser($event)"></room>
+    <room  :roomParam="roomParam" :user="user" @setUser="setUser($event)"></room>
   </div>
 </template>
 
@@ -15,6 +15,7 @@
     data () {
       return {
         user: {},
+        roomParam: null,
         options: [0.5, 1, 2, 3, 5]
       }
     },
@@ -24,6 +25,7 @@
     methods: {
       readParameters() {
         this.user = {name: this.$route.params.name, room: this.$route.params.room}
+        this.roomParam = this.user.room;
       },
       setUser(user) {
          this.goToPlanning()

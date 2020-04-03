@@ -8,14 +8,14 @@
           <b-icon id="share" font-scale="1" icon="link" variant="secondary"></b-icon>
           <b-popover target="share" triggers="hover" placement="top">
             <template v-slot:title>Share planning!</template>
-            <div class="input-group input-group-sm" >
+            <div class="input-group input-group-sm pop-clipboard" >
               <div class="input-group-prepend">
-                <span id="url">{{urlToShare}}</span>
+                <small id="url">{{urlToShare}}</small>
               </div>
-              <button type="button" v-clipboard:copy="urlToShare" v-clipboard:success="onCopy" aria-describedby="url" class="form-control btn btn-sm btn-link " >
+              <button v-if="!showCheck" type="button" v-clipboard:copy="urlToShare" v-clipboard:success="onCopy" aria-describedby="url" class="form-control btn btn-sm btn-link " >
                 <b-icon font-scale="1" icon="clipboard"  variant="secondary" ></b-icon>
               </button>
-              &nbsp;<small class="check" v-bind:class="{'clipboard-check': showCheck}">Copied!</small>
+              <small v-if="showCheck"class="check" v-bind:class="{'clipboard-check': showCheck}">Copied!</small>
             </div>
 
           </b-popover>
@@ -297,6 +297,11 @@
 
   .popover-body {
     padding: 0.5rem 0.75rem 0 !important;
+  }
+
+  .pop-clipboard {
+    align-items: center;
+    vertical-align: middle;
   }
 
 </style>

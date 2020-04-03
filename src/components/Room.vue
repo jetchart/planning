@@ -8,11 +8,12 @@
           <div class="card-title">
             <div class="form-group" align="left">
               <label for="name">Name</label>
-              <input v-model="user.name" v-on:keyup.enter="setUser()" type="text" class="form-control" id="name">
+              <input maxlength="20" v-model="user.name" v-on:keyup.enter="setUser()" type="text" class="form-control" id="name">
             </div>
             <div class="form-group" align="left">
               <label for="room">Room</label>
-              <input v-model="user.room" v-on:keyup.enter="setUser()" type="text" class="form-control" id="room">
+              <input v-if="!roomParam" maxlength="5" v-model="user.room" v-on:keyup.enter="setUser()" type="text" class="form-control" id="room">
+              <input v-else maxlength="5" disabled v-model="user.room" v-on:keyup.enter="setUser()" type="text" class="form-control">
             </div>
             <button :disabled="!user.name || !user.room" class="btn btn-primary" @click="setUser()">Join</button>
           </div>
@@ -27,7 +28,7 @@
 
   export default {
     name: 'Rooms',
-    props: [ 'user'],
+    props: [ 'user', 'roomParam'],
     data () {
       return {
         connected: false,
@@ -39,9 +40,9 @@
       setUser() {
         if (!this.user.name || !this.user.room)
           return;
+        let room = '00000' + this.user.room;
+        this.user.room = room.substring(room.length-5, room.length);
         this.$emit('setUser', this.user);
-        localStorage.setItem('name', this.user.name);
-        localStorage.setItem('room', this.user.room);
       }
     },
     watch: {
