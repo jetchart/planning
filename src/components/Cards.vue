@@ -5,6 +5,11 @@
       <!-- Task to evaluate -->
       <div class="col-md-8" align="left">
         <div align="left">
+          <b-icon id="share" font-scale="1.5" icon="link" variant="secondary"></b-icon>
+          <b-popover target="share" triggers="hover" placement="top">
+            <template v-slot:title>Share planning!</template>
+            {{urlToShare}}
+          </b-popover>
           <b-form-checkbox v-model="administrator" name="check-button" switch><small>Administrator?</small></b-form-checkbox>
         </div>
         <br>
@@ -67,6 +72,7 @@
     components: { Card, TaskHistory, VotesTable, TaskView, },
     data () {
       return {
+        urlToShare: null,
         value: null,
         finalValue: null,
         confirmed: false,
@@ -94,10 +100,12 @@
       },
     },
     mounted() {
+      this.urlToShare = window.location.href.substring(0, window.location.href.length - this.user.name.length);
       this.getValue();
       this.getReset();
       this.getFinalValue();
       this.getNewTask();
+      this.getExistOtherUser();
       this.getDeleteTask();
       this.getSync();
       this.getSyncTasks();
@@ -212,6 +220,12 @@
           if (!this.showToastTaskDeleted)
             this.makeToast('danger', 'Task deleted', `One task have been deleted`);
           this.showToastTaskDeleted = false;
+        });
+      },
+      getExistOtherUser() {
+        this.socket.on('REDIRECT', () => {
+        this.$router.push('/planning/' + this.user.room);
+        this.$store.exists = true;
         });
       },
       getReset() {

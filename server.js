@@ -16,7 +16,15 @@ io.on('connection', socket => {
 
   socket.on('subscribe', (user) => {
 
-    //Check exists
+    //Check if exists other user with same name and room
+    const existsOtherByNameAndRom = connectionService.existsOtherByNameAndRom(socket.id, user.name, user.room, connections);
+    if (existsOtherByNameAndRom != null) {
+      console.log("Ya existe papa");
+      io.to(socket.id).emit('REDIRECT');
+      return;
+    }
+
+    //Check if exist
     const connection = connectionService.findById(socket.id, connections);
     if (connection === undefined) {
       socket.join(user.room);

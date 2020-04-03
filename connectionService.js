@@ -7,6 +7,9 @@ module.exports = {
   findById: function (id, connections) {
     return _.find(connections, con => con.id == id);
   },
+  existsOtherByNameAndRom: function (id, name, room, connections) {
+    return _.find(connections, con => con.id != id && con.user.name == name && con.user.room == room);
+  },
   updateVote: function (id, data, connections) {
     let con = _.find(connections, con => con.id == id);
     con.value = data.value;
