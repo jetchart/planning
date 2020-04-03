@@ -5,10 +5,18 @@
       <!-- Task to evaluate -->
       <div class="col-md-8" align="left">
         <div align="left">
-          <b-icon id="share" font-scale="1.5" icon="link" variant="secondary"></b-icon>
+          <b-icon id="share" font-scale="1" icon="link" variant="secondary"></b-icon>
           <b-popover target="share" triggers="hover" placement="top">
             <template v-slot:title>Share planning!</template>
-            {{urlToShare}}
+
+            <div class="input-group input-group-sm mb-3">
+              <div class="input-group-prepend">
+                <span id="url">{{urlToShare}}</span>
+              </div>
+              <button v-if="!showCheck" type="button" v-clipboard:copy="urlToShare" v-clipboard:success="onCopy" aria-describedby="url" class="form-control btn btn-sm btn-link"><b-icon font-scale="1" icon="clipboard" variant="secondary"></b-icon></button>
+              <button v-if="showCheck" type="button" aria-describedby="url" class="form-control btn btn-sm btn-link"><b-icon font-scale="1" icon="check" variant="secondary"></b-icon></button>
+            </div>
+
           </b-popover>
           <b-form-checkbox v-model="administrator" name="check-button" switch><small>Administrator?</small></b-form-checkbox>
         </div>
@@ -86,7 +94,8 @@
         showToastNewVote: false,
         showToastTaskDeleted: false,
         workflowStatus: 1, /* 1: init, 2: vote, 3: confirm vote, 4: sendResult */
-        showOverlay: true
+        showOverlay: true,
+        showCheck: false
       }
     },
     computed: {
@@ -111,6 +120,10 @@
       this.getSyncTasks();
     },
     methods: {
+      onCopy() {
+        this.showCheck = true;
+        setTimeout(() => {  this.showCheck = false }, 2000);
+      },
       sendCard(value) {
         this.value = value;
         this.workflowStatus = 3;
@@ -260,6 +273,15 @@
   .task-history {
     max-height: 12rem;
     overflow-y: scroll;
+  }
+
+  #share {
+    margin-bottom: 0.5rem;
+    cursor: pointer;
+  }
+
+  #url {
+    margin: 5px;
   }
 
 </style>
