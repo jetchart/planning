@@ -21,6 +21,9 @@
       </tr>
       </tbody>
     </table>
+    <div align="right">
+      <b-icon @click="exportPDF()" class="pointer" icon="download" align="right"  v-b-tooltip.hover title="Generate pdf"></b-icon>
+    </div>
     <!-- Modal confirm delete -->
     <b-modal ref="deleteModal" title="Delete task" centered @ok="$emit('sendDeleteTask', taskToDelete.id)">
       <p>Delete the task <b>{{taskToDelete.title}}</b>?</p>
@@ -29,6 +32,8 @@
 </template>
 
 <script>
+
+  import jsPDF from 'jspdf';
 
   export default {
     name: 'TaskHistory',
@@ -44,6 +49,40 @@
       showDeleteModal(task) {
         this.taskToDelete = task;
         this.$refs.deleteModal.show();
+      },
+      exportPDF() {
+        let row = 30;
+        let doc = new jsPDF();
+        const date = new Date().toDateString();
+        //Title
+        doc.setFontSize(40);
+        doc.text("Planning", 35, row);
+
+        row += 10;
+        doc.setFontSize(20);
+        doc.text(date, 35, row);
+
+        this.tasks.forEach(task => {
+          //Task title
+          row += 30;
+          doc.setFontSize(20);
+          doc.setFontStyle("bold");
+          doc.text(task.task.title, 35, row);
+
+          row += 8
+          doc.setFontSize(15);
+          doc.setFontStyle("normal");
+          doc.text("Result: " + task.task.value.toString(), 35, row);
+
+          row += 8;
+          doc.setFontStyle("normal");
+          doc.setFontSize(8);
+          doc.text(task.task.description, 35, row);
+
+        });
+
+        doc.save('Planning ' + date + '.pdf');
+
       }
     },
     watch: {
