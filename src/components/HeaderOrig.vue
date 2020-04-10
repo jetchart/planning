@@ -2,7 +2,7 @@
   <div class="header">
     <div class="row header-row">
       <div class="col" align="left">
-        <a href="https://portfolio-jetchart.herokuapp.com/" target="_blank"><img align="left" alt="" src="../assets/www5.png" height="30px" width="30px"></a>
+        <a href="https://portfolio-jme.herokuapp.com/" target="_blank"><img align="left" alt="" src="../assets/www5.png" height="30px" width="30px"></a>
       </div>
       <div class="col" align="center">
         <span class="brand">PLANNING</span>
