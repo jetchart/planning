@@ -1,10 +1,11 @@
 <template>
   <div id="app">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <header-custom></header-custom>
-    <div v-bind:class="{'content': getConnected, 'bg-light': getConnected}">
+    <header-custom class="header-a header-t"></header-custom>
+    <div class="header-t" v-bind:class="{'content': getConnected, 'bg-light': getConnected}">
       <router-view></router-view>
     </div>
+    <footer-custom class="opacity-t"></footer-custom>
   </div>
 </template>
 
@@ -12,6 +13,7 @@
   import 'bootstrap/dist/css/bootstrap.css'
   import 'bootstrap-vue/dist/bootstrap-vue.css'
   import HeaderCustom from './components/HeaderOrig'
+  import FooterCustom from './components/Footer'
   import {mapGetters} from "vuex";
 
 export default {
@@ -24,7 +26,7 @@ export default {
       msg: 'Welcome to Your Vue.js App'
     }
   },
-  components: { HeaderCustom }
+  components: { HeaderCustom, FooterCustom, }
 }
 </script>
 
@@ -67,6 +69,19 @@ a {
   -webkit-box-shadow: 0px 0px 8px 0px rgba(0,0,0,0.29);
   -moz-box-shadow: 0px 0px 8px 0px rgba(0,0,0,0.29);
   box-shadow: 0px 0px 8px 0px rgba(0,0,0,0.29);
+}
+
+.opacity-t {
+  animation: opacity-animation 2s linear;
+}
+
+@keyframes opacity-animation {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.header-t {
+  animation: opacity-animation 1s linear;
 }
 
 </style>

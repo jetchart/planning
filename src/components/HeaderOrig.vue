@@ -2,11 +2,11 @@
   <div class="header">
     <div class="row header-row">
       <div class="col" align="left">
-        <!--<img width="50" height="45" class="logo" src="../../public/assets/j.jpg" alt="">-->
-        <span class="brand">PLANNING POKER</span>
+        <a href="https://portfolio-jetchart.herokuapp.com/" target="_blank"><img align="left" alt="" src="../assets/www5.png" height="30px" width="30px"></a>
       </div>
       <div class="col" align="center">
-        <b-icon font-scale="1.5" icon="exclamation-circle-fill" variant="secondary" @click="$refs.modalHelp.show()" ></b-icon>
+        <span class="brand">PLANNING</span>
+        <b-icon font-scale="1" icon="exclamation-circle-fill" variant="secondary" @click="$refs.modalHelp.show()" ></b-icon>
       </div>
       <div v-if="getConnected" class="col" align="right">
         <b-dropdown dropleft size="sm" class="m-2" variant="secondary" toggle-class="text-decoration-none" >
