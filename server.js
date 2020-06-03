@@ -142,7 +142,9 @@ io.on('connection', socket => {
 
 /************* SERVER **************/
 const port = process.env.PORT || 3000
-http.listen(port , () => {
+let server = http.listen(port , () => {
   console.log('Hostname:', os.hostname());
   console.log(`Listening on port: ${port}`)
-})
+});
+
+server.setTimeout(500000);
