@@ -271,12 +271,12 @@
   }
 
   .votes-table {
-       max-height: 14rem;
+       max-height: 12rem;
        overflow-y: scroll;
    }
 
   .task-history {
-    max-height: 9rem;
+    max-height: 12rem;
     overflow-y: scroll;
   }
 
