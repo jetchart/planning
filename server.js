@@ -9,11 +9,9 @@ var connections = [];
 var tasks = [];
 var task = null;
 
-io.configure(function() {
-		io.set('close timeout', 60*60*24);
-)};
-
 io.on('connection', socket => {
+	
+	io.set('close timeout', 60*60*24);	
 
   console.log(`A user connected with socket id ${socket.id}`);
 
