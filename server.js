@@ -11,7 +11,7 @@ var task = null;
 
 io.on('connection', socket => {
 	
-	io.set('close timeout', 60*60*24);	
+	//io.set('close timeout', 60*60*24);	
 
   console.log(`A user connected with socket id ${socket.id}`);
 
