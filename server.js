@@ -86,7 +86,7 @@ io.on('connection', socket => {
   /************* PING **************/
 
   socket.on('PING', (data) => {
-    console.log("PONG!", data);
+    //console.log("PONG!", data);
   });
 
   /************* CHAT **************/
