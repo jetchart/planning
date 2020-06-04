@@ -10,8 +10,8 @@ var tasks = [];
 var task = null;
 
 io.on('connection', socket => {
-	
-	//io.set('close timeout', 60*60*24);	
+
+	//io.set('close timeout', 60*60*24);
 
   console.log(`A user connected with socket id ${socket.id}`);
 
@@ -82,11 +82,11 @@ io.on('connection', socket => {
       }
     }
   });
-  
-  /************* CHAT **************/
+
+  /************* PING **************/
 
   socket.on('PING', (data) => {
-    console.log("ping!", data);
+    console.log("PONG!", data);
   });
 
   /************* CHAT **************/
