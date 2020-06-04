@@ -146,5 +146,3 @@ let server = http.listen(port , () => {
   console.log('Hostname:', os.hostname());
   console.log(`Listening on port: ${port}`)
 });
-
-server.setTimeout(500000);
