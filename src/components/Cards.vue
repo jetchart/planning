@@ -225,7 +225,6 @@
       },
       doPing() {
         setInterval(() => {
-          console.log("PINGGGGG");
           const data = { user: this.user, };
           this.socket.emit('PING', data);
         }, 12000);
