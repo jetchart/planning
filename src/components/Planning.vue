@@ -1,6 +1,6 @@
 <template>
   <div>
-    <cards v-if="getSocket && getUser" :socket="getSocket" :user="getUser" :options="options"></cards>
+    <cards v-if="getSocket && getUser" :socket="getSocket" :user="getUser" :options="options" @reconnect="reconnect()"></cards>
     <chat  v-if="getSocket && getUser" :socket="getSocket" :user="getUser"></chat>
   </div>
 </template>
@@ -18,7 +18,7 @@
       return {
         user: {},
         url: location.hostname === 'localhost' ? 'localhost:3000' : 'https://planning-vue.herokuapp.com/',
-        options: [0.5, 1, 2, 3, 5]
+        options: [0.5, 1, 2, 3, 5],
       }
     },
     computed: {
@@ -32,6 +32,11 @@
         this.$store.commit('join',this.user);
         this.socket.emit('subscribe', this.user);
         window.scrollTo(0, 0);
+      },
+      reconnect() {
+        console.log('reconnect planning');
+        this.socket = io(this.url);
+        this.subscribe();
       },
     },
     mounted() {

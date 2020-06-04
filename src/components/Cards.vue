@@ -1,6 +1,12 @@
 <template>
   <div class="">
-    <b-overlay :show="showOverlay" rounded="sm">
+    <b-overlay :show="showOverlay || !socket.connected" rounded="sm">
+    <template v-slot:overlay>
+      <div class="text-center">
+        <b-icon icon="stopwatch" font-scale="3" animation="cylon"></b-icon>
+        <p id="cancel-label">{{showOverlay? 'Please wait...' : 'Reconnecting...'}}</p>
+      </div>
+    </template>
     <div class="row">
       <!-- Task to evaluate -->
       <div class="col-md-8" align="left">
@@ -77,7 +83,7 @@
 
   export default {
     name: 'Cards',
-    props: ['socket', 'user', 'options'],
+    props: ['socket', 'user', 'options', ],
     components: { Card, TaskHistory, VotesTable, TaskView, },
     data () {
       return {
@@ -217,12 +223,12 @@
           this.tasks = data;
         });
       },
-	  doPing() {
-		setInterval(() => {
-		  //console.log("PINGGGGG");
-			const data = { user: this.user, };
-			this.socket.emit('PING', data);
-		}, 12000);
+      doPing() {
+        setInterval(() => {
+          console.log("PINGGGGG");
+          const data = { user: this.user, };
+          this.socket.emit('PING', data);
+        }, 12000);
       },
       getFinalValue() {
         this.socket.on('FINAL_VALUE', () => {
@@ -264,6 +270,10 @@
       },
     },
     watch: {
+      'socket.connected': function() {
+        if (!this.socket.connected)
+          this.$emit('reconnect');
+      }
     },
   }
 </script>
