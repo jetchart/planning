@@ -36,6 +36,7 @@
       reconnect() {
         console.log('reconnect planning');
         this.socket = io(this.url);
+        this.$store.commit("setSocket", this.socket);
         this.subscribe();
       },
     },

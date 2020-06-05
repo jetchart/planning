@@ -117,17 +117,20 @@
     },
     mounted() {
       this.urlToShare = window.location.href.substring(0, window.location.href.length - this.user.name.length);
-      this.getValue();
-      this.getReset();
-      this.getFinalValue();
-      this.getNewTask();
-      this.getExistOtherUser();
-      this.getDeleteTask();
-      this.getSync();
-      this.getSyncTasks();
-      this.doPing();
+      this.init();
     },
     methods: {
+      init() {
+        this.getValue();
+        this.getReset();
+        this.getFinalValue();
+        this.getNewTask();
+        this.getExistOtherUser();
+        this.getDeleteTask();
+        this.getSync();
+        this.getSyncTasks();
+        this.doPing();
+      },
       onCopy() {
         this.showCheck = true;
         setTimeout(() => {  this.showCheck = false }, 2000);
@@ -241,7 +244,7 @@
           this.value = null;
           this.confirmed = false;
           if (!this.showToastNewTask)
-            this.makeToast('secondary', 'Nwe task', 'There is a new task to be evaluated');
+            this.makeToast('secondary', 'New task', 'There is a new task to be evaluated');
           this.showToastNewTask = false;
         });
       },
@@ -272,6 +275,10 @@
       'socket.connected': function() {
         if (!this.socket.connected)
           this.$emit('reconnect');
+        else {
+          this.hide();
+          this.init();
+        }
       }
     },
   }
