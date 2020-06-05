@@ -1,10 +1,10 @@
 <template>
   <div class="">
-    <b-overlay :show="showOverlay || !socket.connected" rounded="sm">
+    <b-overlay :show="showOverlay || !syncTasks  || !syncUsers || !socket.connected" rounded="sm">
     <template v-slot:overlay>
       <div class="text-center">
         <b-icon icon="stopwatch" font-scale="3" animation="cylon"></b-icon>
-        <p id="cancel-label">{{showOverlay? 'Please wait...' : 'Reconnecting...'}}</p>
+        <p id="cancel-label">{{showOverlay || !syncTasks  || !syncUsers? 'Please wait...' : 'Reconnecting...'}}</p>
       </div>
     </template>
     <div class="row">
@@ -102,7 +102,9 @@
         showToastTaskDeleted: false,
         workflowStatus: 1, /* 1: init, 2: vote, 3: confirm vote, 4: sendResult */
         showOverlay: true,
-        showCheck: false
+        showCheck: false,
+        syncTasks: false,
+        syncUsers: false,
       }
     },
     computed: {
@@ -117,10 +119,12 @@
     },
     mounted() {
       this.urlToShare = window.location.href.substring(0, window.location.href.length - this.user.name.length);
-      this.init();
+      //this.init();
     },
     methods: {
       init() {
+        this.syncTasks = false;
+        this.syncUsers = false;
         this.getValue();
         this.getReset();
         this.getFinalValue();
@@ -219,11 +223,13 @@
             this.administrator = true;
           }
           this.showOverlay = false;
+          this.syncUsers = true;
         });
       },
       getSyncTasks() {
         this.socket.on('SYNC_TASKS', (data) => {
           this.tasks = data;
+          this.syncTasks = true;
         });
       },
       doPing() {
