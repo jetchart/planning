@@ -264,6 +264,7 @@
       },
       getExistOtherUser() {
         this.socket.on('REDIRECT', () => {
+        this.socket.disconnect();
         this.$router.push('/planning/' + this.user.room);
         this.$store.exists = true;
         });

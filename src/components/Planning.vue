@@ -46,7 +46,7 @@
       if (!this.user.name || !this.user.room)
         this.$router.push("/");
       this.socket = this.getSocket;
-      if (!this.socket) {
+      if (!this.socket || !this.socket.connected) {
         this.socket = io(this.url);
         this.$store.commit("setSocket", this.socket);
       }
