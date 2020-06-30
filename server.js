@@ -54,11 +54,8 @@ io.on('connection', socket => {
       socket.in(connection.user.room).emit('SYNC', connectionService.filterAllByRoom(connection.user.room, connections));
       /* Delete tasks if nobody in room */
       if (connectionService.filterAllByRoom(connection.user.room, connections).length == 0) {
-        console.log("Delete tasks from room " + connection.user.room);
-        let tasksRoom = taskService.filterAllByRoom(connection.user.room, tasks);
-        tasksRoom.forEach(task => {
-          taskService.deleteById(task.task.id, tasks);
-        });
+        taskService.countDownRemoveTasks(connections, connection.user.room, tasks, 10000);
+        task = null;
       }
     }
   });
@@ -72,11 +69,7 @@ io.on('connection', socket => {
       socket.in(connection.user.room).emit('SYNC', connectionService.filterAllByRoom(connection.user.room, connections));
       /* Delete tasks if nobody in room */
       if (connectionService.filterAllByRoom(connection.user.room, connections).length == 0) {
-        console.log("Delete tasks from room " + connection.user.room);
-        let tasksRoom = taskService.filterAllByRoom(connection.user.room, tasks);
-        tasksRoom.forEach(task => {
-          taskService.deleteById(task.task.id, tasks);
-        });
+        taskService.countDownRemoveTasks(connections, connection.user.room, tasks, 15 * 60 * 1000);
         // Delete task
         task = null;
       }
