@@ -71,7 +71,7 @@
       }
     },
     mounted() {
-      this.fileCSVName = 'Planning ' + new Date().toISOString() + '.xls';
+      this.fileCSVName = 'Planning ' + new Date().toISOString().substring(0, 10) + '.xls';
     },
     methods: {
       showDeleteModal(task) {
