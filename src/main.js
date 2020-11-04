@@ -8,6 +8,7 @@ import VueLodash from 'vue-lodash'
 import lodash from 'lodash'
 import VueClipboard from 'vue-clipboard2'
 import jspdf from 'jspdf'
+import JsonExcel from "vue-json-excel";
 
 Vue.config.productionTip = false
 
@@ -17,6 +18,7 @@ Vue.use(IconsPlugin)
 Vue.use(VueClipboard)
 Vue.use(jspdf)
 Vue.use(VueLodash, { name: 'custom' , lodash: lodash })
+Vue.component("downloadExcel", JsonExcel)
 
 
 new Vue({

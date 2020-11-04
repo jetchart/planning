@@ -22,7 +22,17 @@
       </tbody>
     </table>
     <div align="right">
-      <b-icon @click="exportPDF()" class="pointer" icon="download" align="right"  v-b-tooltip.hover title="Generate pdf"></b-icon>
+        <b-badge variant="success">Tasks: {{totalTasks}}</b-badge>
+        <b-badge variant="success">SP: {{totalSP}}</b-badge>
+        <download-excel
+            class="btn btn-default"
+            :data="tasks"
+            :fields="json_fields"
+            worksheet="Planning"
+            :name="fileCSVName"
+          >
+          <b-icon class="pointer" icon="download" align="right"  v-b-tooltip.hover title="Generate report"></b-icon>
+        </download-excel>
     </div>
     <!-- Modal confirm delete -->
     <b-modal ref="deleteModal" title="Delete task" centered @ok="$emit('sendDeleteTask', taskToDelete.id)">
@@ -41,9 +51,27 @@
     data () {
       return {
         taskToDelete: {},
+        totalTasks: 0,
+        totalSP: 0,
+        fileCSVName: '',
+        json_fields: {
+          "#": "task.id",
+          "Title": "task.title",
+          "Description": "task.description",
+          "Story Point": "task.value",
+        },
+        json_meta: [
+          [
+            {
+              key: "charset",
+              value: "utf-8",
+            },
+          ],
+        ],
       }
     },
     mounted() {
+      this.fileCSVName = 'Planning ' + new Date().toISOString() + '.xls';
     },
     methods: {
       showDeleteModal(task) {
@@ -86,6 +114,12 @@
       }
     },
     watch: {
+      'tasks': function() {
+        this.totalTasks = this.tasks.length;
+        let sp = 0;
+        this.tasks.forEach(task => sp += task.task.value);
+        this.totalSP = sp;
+      }
     },
     components: {  }
   }
