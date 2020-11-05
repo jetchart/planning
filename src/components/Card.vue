@@ -2,7 +2,7 @@
   <div class="card bg-light mb-3">
     <div class="card-header no-padding"><b>{{valueCard}}</b></div>
     <div class="card-body padding-sm">
-      <div class="card-title">
+      <div class="card-title margin-top-bottom">
         <button-card :valueCard="valueCard" :valueSelected="valueSelected" :confirmed="confirmed" :workflowStatus="workflowStatus" :confirmedTask="confirmedTask" @confirm="confirm()" @sendCard="sendCard($event)"></button-card>
       </div>
     </div>
@@ -45,4 +45,10 @@
 .padding-sm {
   padding: 0.5rem !important;
 }
+
+.margin-top-bottom {
+  margin-top: 0.75rem !important;
+  margin-bottom: 0.75rem !important;
+}
+
 </style>

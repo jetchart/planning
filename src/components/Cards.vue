@@ -52,7 +52,7 @@
     </div>
     <div class="row" align="left">
       <!-- Task History -->
-      <div class="col task-history">
+      <div class="col">
         <task-history :administrator="administrator" :tasks="tasks" @sendDeleteTask="sendDeleteTask($event)"></task-history>
       </div>
     </div>
@@ -305,11 +305,6 @@
        max-height: 12rem;
        overflow-y: scroll;
    }
-
-  .task-history {
-    max-height: 12rem;
-    overflow-y: scroll;
-  }
 
   #share {
     margin-bottom: 0.5rem;
