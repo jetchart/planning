@@ -25,11 +25,14 @@
         <b-badge variant="success">Tasks: {{totalTasks}}</b-badge>
         <b-badge variant="success">SP: {{totalSP}}</b-badge>
         <download-excel
+            v-if="!loadingDownload"
             class="btn btn-default"
             :data="tasks"
             :fields="json_fields"
             worksheet="Planning"
             :name="fileCSVName"
+            :before-generate = "startDownload"
+            :before-finish   = "finishDownload"
           >
           <b-icon class="pointer" icon="download" align="right"  v-b-tooltip.hover title="Generate report"></b-icon>
         </download-excel>
@@ -50,6 +53,7 @@
     props: ['tasks', 'administrator'],
     data () {
       return {
+        loadingDownload: false,
         taskToDelete: {},
         totalTasks: 0,
         totalSP: 0,
@@ -74,6 +78,14 @@
       this.fileCSVName = 'Planning ' + new Date().toISOString().substring(0, 10) + '.xls';
     },
     methods: {
+      startDownload() {
+        this.loadingDownload = true;
+        console.log(this.loadingDownload);
+      },
+      finishDownload() {
+        this.loadingDownload = false;
+        console.log(this.loadingDownload);
+      },
       showDeleteModal(task) {
         this.taskToDelete = task;
         this.$refs.deleteModal.show();

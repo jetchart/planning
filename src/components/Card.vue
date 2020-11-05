@@ -1,7 +1,7 @@
 <template>
   <div class="card bg-light mb-3">
-    <div class="card-header"><b>{{valueCard}}</b></div>
-    <div class="card-body">
+    <div class="card-header no-padding"><b>{{valueCard}}</b></div>
+    <div class="card-body padding-sm">
       <div class="card-title">
         <button-card :valueCard="valueCard" :valueSelected="valueSelected" :confirmed="confirmed" :workflowStatus="workflowStatus" :confirmedTask="confirmedTask" @confirm="confirm()" @sendCard="sendCard($event)"></button-card>
       </div>
@@ -37,4 +37,12 @@
 </script>
 
 <style>
+
+.no-padding {
+  padding: 0 !important;
+}
+
+.padding-sm {
+  padding: 0.5rem !important;
+}
 </style>

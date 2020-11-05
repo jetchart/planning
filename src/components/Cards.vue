@@ -294,7 +294,7 @@
 <style>
 
   .planning-card {
-    width: 8rem;
+    width: 6rem;
   }
 
   .adm {
