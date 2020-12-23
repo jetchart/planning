@@ -129,7 +129,7 @@
       'tasks': function() {
         this.totalTasks = this.tasks.length;
         let sp = 0;
-        this.tasks.forEach(task => sp += task.task.value);
+        this.tasks.forEach(task => sp += Number(task.task.value));
         this.totalSP = sp;
       }
     },
